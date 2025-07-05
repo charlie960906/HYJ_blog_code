@@ -1,0 +1,367 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom fonts */
+* {
+  font-family: 'Inter', sans-serif;
+}
+
+/* Glassmorphism styles */
+.glassmorphism-card {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 20px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+.glassmorphism-nav {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.glassmorphism-input {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  transition: all 0.3s ease;
+}
+
+.glassmorphism-input:focus {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(59, 130, 246, 0.5);
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+}
+
+.glassmorphism-mini {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+}
+
+/* Typing animation */
+.typing-cursor {
+  animation: blink 1s infinite;
+}
+
+@keyframes blink {
+  0%, 50% { opacity: 1; }
+  51%, 100% { opacity: 0; }
+}
+
+/* Loading spinner */
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid rgba(255, 255, 255, 0.3);
+  border-top: 4px solid #3B82F6;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Navigation improvements */
+.nav-item {
+  position: relative;
+  overflow: hidden;
+}
+
+.nav-item::before {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: linear-gradient(90deg, #3B82F6, #8B5CF6);
+  transition: width 0.3s ease;
+}
+
+.nav-item:hover::before {
+  width: 100%;
+}
+
+/* Search container improvements */
+.search-container {
+  position: relative;
+  height: 40px; /* 固定高度避免布局變化 */
+}
+
+/* 標籤雲樣式 - 簡潔版本 */
+.tag-cloud-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  padding: 3rem 2rem;
+  min-height: 400px;
+  position: relative;
+}
+
+/* 中心區域高亮效果 */
+.tag-cloud-container::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 300px;
+  height: 300px;
+  border-radius: 50%;
+  background: radial-gradient(circle, 
+    rgba(59, 130, 246, 0.15) 0%, 
+    rgba(139, 92, 246, 0.1) 40%, 
+    transparent 70%);
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.tag-cloud-item {
+  display: inline-block;
+  color: white;
+  text-decoration: none;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  padding: 0.6rem 1.2rem;
+  border-radius: 25px;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  font-weight: 500;
+  position: relative;
+  z-index: 2;
+  white-space: nowrap;
+}
+
+.tag-cloud-item:hover {
+  transform: scale(1.15);
+  background: rgba(59, 130, 246, 0.3);
+  box-shadow: 0 8px 32px rgba(59, 130, 246, 0.4);
+  color: #ffffff;
+  border-color: rgba(59, 130, 246, 0.5);
+}
+
+.tag-count {
+  font-size: 0.75em;
+  opacity: 0.8;
+  margin-left: 0.4rem;
+  font-weight: 400;
+}
+
+/* 標籤大小層次 */
+.tag-cloud-item[style*="2."] {
+  /* 大標籤 - 移向中心 */
+  order: -3;
+}
+
+.tag-cloud-item[style*="1.8"],
+.tag-cloud-item[style*="1.9"] {
+  /* 中大標籤 */
+  order: -2;
+}
+
+.tag-cloud-item[style*="1.4"],
+.tag-cloud-item[style*="1.5"],
+.tag-cloud-item[style*="1.6"],
+.tag-cloud-item[style*="1.7"] {
+  /* 中等標籤 */
+  order: -1;
+}
+
+/* Prose styles for markdown content */
+.prose {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.prose h1,
+.prose h2,
+.prose h3,
+.prose h4,
+.prose h5,
+.prose h6 {
+  color: white;
+  font-weight: 600;
+}
+
+.prose a {
+  color: #60A5FA;
+  text-decoration: none;
+}
+
+.prose a:hover {
+  color: #93C5FD;
+  text-decoration: underline;
+}
+
+.prose code {
+  background: rgba(255, 255, 255, 0.1);
+  padding: 0.2rem 0.4rem;
+  border-radius: 0.25rem;
+  font-size: 0.9em;
+}
+
+.prose pre {
+  background: rgba(0, 0, 0, 0.5);
+  border-radius: 0.5rem;
+  padding: 1rem;
+  overflow-x: auto;
+}
+
+.prose blockquote {
+  border-left: 4px solid #60A5FA;
+  padding-left: 1rem;
+  margin-left: 0;
+  font-style: italic;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.prose ul,
+.prose ol {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.prose li {
+  margin: 0.5rem 0;
+}
+
+.prose table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 1rem 0;
+}
+
+.prose th,
+.prose td {
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 0.5rem 1rem;
+  text-align: left;
+}
+
+.prose th {
+  background: rgba(255, 255, 255, 0.1);
+  font-weight: 600;
+}
+
+.prose tr:nth-child(even) {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+/* Text clamp utilities */
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.line-clamp-3 {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.5);
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.6s ease-out;
+}
+
+/* Button hover effects */
+button:hover,
+.hover-scale:hover {
+  transform: scale(1.05);
+  transition: transform 0.2s ease;
+}
+
+/* Responsive design improvements */
+@media (max-width: 768px) {
+  .glassmorphism-card {
+    border-radius: 16px;
+    padding: 1.5rem;
+  }
+  
+  .tag-cloud-container {
+    padding: 2rem 1rem;
+    min-height: 300px;
+  }
+  
+  .tag-cloud-item {
+    font-size: 0.9rem !important;
+    padding: 0.4rem 0.8rem;
+  }
+
+  .tag-cloud-container::before {
+    width: 200px;
+    height: 200px;
+  }
+}
+
+@media (max-width: 1024px) {
+  /* 中等螢幕的導航調整 */
+  .navbar-items {
+    display: none;
+  }
+}
+
+/* Focus styles for accessibility */
+button:focus,
+input:focus,
+a:focus {
+  outline: 2px solid #60A5FA;
+  outline-offset: 2px;
+}
+
+/* Print styles */
+@media print {
+  .glassmorphism-card,
+  .glassmorphism-nav,
+  .glassmorphism-input,
+  .glassmorphism-mini {
+    background: white;
+    color: black;
+    border: 1px solid #ccc;
+    box-shadow: none;
+    backdrop-filter: none;
+  }
+}
