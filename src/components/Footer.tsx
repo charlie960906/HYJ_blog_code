@@ -45,13 +45,13 @@ const Footer: React.FC = () => {
     {
       icon: MousePointer,
       label: '點擊次數',
-      value: analytics.totalClicks.toLocaleString(),
+      value: analytics.totalClicks > 0 ? analytics.totalClicks.toLocaleString() : '-',
       color: 'text-yellow-400'
     },
     {
       icon: Eye,
       label: '觀看次數',
-      value: analytics.totalViews.toLocaleString(),
+      value: analytics.totalViews > 0 ? analytics.totalViews.toLocaleString() : '-',
       color: 'text-purple-400'
     }
   ];
@@ -76,37 +76,37 @@ const Footer: React.FC = () => {
           ))}
         </div>
 
-        {/* Uptime */}
-        <div className="glassmorphism-card p-6 mb-8">
-          <div className="flex items-center justify-center mb-4">
-            <Clock className="w-5 h-5 text-blue-400 mr-2" />
-            <h3 className="text-lg font-semibold text-white">網站運行時間</h3>
+        {/* Uptime - 縮小版本 */}
+        <div className="glassmorphism-mini p-4 mb-6">
+          <div className="flex items-center justify-center mb-3">
+            <Clock className="w-4 h-4 text-blue-400 mr-2" />
+            <h3 className="text-base font-semibold text-white">網站運行時間</h3>
           </div>
-          <div className="text-center space-y-2">
-            <div className="text-sm text-white/70">
-              自 2025年3月4日 起運行
+          <div className="text-center">
+            <div className="text-xs text-white/70 mb-2">
+              自 2025年1月1日 起運行
             </div>
-            <div className="grid grid-cols-4 gap-4 text-center">
-              <div className="glassmorphism-mini p-3 rounded-lg">
-                <div className="text-2xl font-bold text-white">
+            <div className="flex justify-center space-x-3 text-center">
+              <div className="glassmorphism-mini px-2 py-1 rounded">
+                <div className="text-lg font-bold text-white">
                   {uptime.days}
                 </div>
                 <div className="text-xs text-white/70">天</div>
               </div>
-              <div className="glassmorphism-mini p-3 rounded-lg">
-                <div className="text-2xl font-bold text-white">
+              <div className="glassmorphism-mini px-2 py-1 rounded">
+                <div className="text-lg font-bold text-white">
                   {uptime.hours}
                 </div>
-                <div className="text-xs text-white/70">小時</div>
+                <div className="text-xs text-white/70">時</div>
               </div>
-              <div className="glassmorphism-mini p-3 rounded-lg">
-                <div className="text-2xl font-bold text-white">
+              <div className="glassmorphism-mini px-2 py-1 rounded">
+                <div className="text-lg font-bold text-white">
                   {uptime.minutes}
                 </div>
-                <div className="text-xs text-white/70">分鐘</div>
+                <div className="text-xs text-white/70">分</div>
               </div>
-              <div className="glassmorphism-mini p-3 rounded-lg">
-                <div className="text-2xl font-bold text-white">
+              <div className="glassmorphism-mini px-2 py-1 rounded">
+                <div className="text-lg font-bold text-white">
                   {uptime.seconds}
                 </div>
                 <div className="text-xs text-white/70">秒</div>

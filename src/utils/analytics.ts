@@ -3,15 +3,13 @@ import { getPostStats } from './posts';
 export const getAnalyticsData = async () => {
   const { totalPosts, totalWords } = await getPostStats();
   
-  // 模擬點擊和觀看數據（在真實應用中，這些會來自 GA4 API）
-  const totalClicks = Math.floor(totalPosts * 45 + Math.random() * 100);
-  const totalViews = Math.floor(totalPosts * 120 + Math.random() * 200);
-  
+  // 實際應用中，這些數據應該來自真實的 Google Analytics API
+  // 目前返回基於實際文章數據的統計
   return {
     totalPosts,
     totalWords,
-    totalClicks,
-    totalViews
+    totalClicks: 0, // 需要從 GA4 API 獲取
+    totalViews: 0   // 需要從 GA4 API 獲取
   };
 };
 

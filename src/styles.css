@@ -94,87 +94,6 @@
   height: 40px; /* 固定高度避免布局變化 */
 }
 
-/* 標籤雲樣式 - 簡潔版本 */
-.tag-cloud-container {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  align-items: center;
-  gap: 1rem;
-  padding: 3rem 2rem;
-  min-height: 400px;
-  position: relative;
-}
-
-/* 中心區域高亮效果 */
-.tag-cloud-container::before {
-  content: '';
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 300px;
-  height: 300px;
-  border-radius: 50%;
-  background: radial-gradient(circle, 
-    rgba(59, 130, 246, 0.15) 0%, 
-    rgba(139, 92, 246, 0.1) 40%, 
-    transparent 70%);
-  transform: translate(-50%, -50%);
-  pointer-events: none;
-  z-index: 1;
-}
-
-.tag-cloud-item {
-  display: inline-block;
-  color: white;
-  text-decoration: none;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  padding: 0.6rem 1.2rem;
-  border-radius: 25px;
-  background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  font-weight: 500;
-  position: relative;
-  z-index: 2;
-  white-space: nowrap;
-}
-
-.tag-cloud-item:hover {
-  transform: scale(1.15);
-  background: rgba(59, 130, 246, 0.3);
-  box-shadow: 0 8px 32px rgba(59, 130, 246, 0.4);
-  color: #ffffff;
-  border-color: rgba(59, 130, 246, 0.5);
-}
-
-.tag-count {
-  font-size: 0.75em;
-  opacity: 0.8;
-  margin-left: 0.4rem;
-  font-weight: 400;
-}
-
-/* 標籤大小層次 */
-.tag-cloud-item[style*="2."] {
-  /* 大標籤 - 移向中心 */
-  order: -3;
-}
-
-.tag-cloud-item[style*="1.8"],
-.tag-cloud-item[style*="1.9"] {
-  /* 中大標籤 */
-  order: -2;
-}
-
-.tag-cloud-item[style*="1.4"],
-.tag-cloud-item[style*="1.5"],
-.tag-cloud-item[style*="1.6"],
-.tag-cloud-item[style*="1.7"] {
-  /* 中等標籤 */
-  order: -1;
-}
-
 /* Prose styles for markdown content */
 .prose {
   color: rgba(255, 255, 255, 0.9);
@@ -319,21 +238,6 @@ button:hover,
   .glassmorphism-card {
     border-radius: 16px;
     padding: 1.5rem;
-  }
-  
-  .tag-cloud-container {
-    padding: 2rem 1rem;
-    min-height: 300px;
-  }
-  
-  .tag-cloud-item {
-    font-size: 0.9rem !important;
-    padding: 0.4rem 0.8rem;
-  }
-
-  .tag-cloud-container::before {
-    width: 200px;
-    height: 200px;
   }
 }
 

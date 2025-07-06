@@ -54,7 +54,8 @@ const Navbar: React.FC = () => {
     { name: '評價', path: '/category/reviews' },
     { name: '財經', path: '/category/finance' },
     { name: '標籤', path: '/tags' },
-    { name: '關於', path: '/about' }
+    { name: '關於', path: '/about' },
+    { name: '友情連結', path: '/friends' }
   ];
 
   return (

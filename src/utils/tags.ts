@@ -15,12 +15,12 @@ export const getTagsWithFrequency = async () => {
   const maxCount = Math.max(...counts);
   const minCount = Math.min(...counts);
   
-  // 計算標籤雲的大小（0.8rem 到 2.8rem）
+  // 計算標籤雲的大小（1.2rem 到 2.2rem，縮小差距）
   return Object.entries(tagCounts)
     .map(([name, count]) => ({
       name,
       count,
-      size: 0.8 + (count - minCount) / (maxCount - minCount) * 2
+      size: 1.2 + (count - minCount) / (maxCount - minCount) * 1.0
     }))
     .sort((a, b) => b.count - a.count);
 };
