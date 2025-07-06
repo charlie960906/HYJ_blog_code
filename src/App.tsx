@@ -6,6 +6,7 @@ import Footer from './components/Footer';
 import LoadingSpinner from './components/LoadingSpinner';
 import ScrollProgress from './components/ScrollProgress';
 import ScrollToTop from './components/ScrollToTop';
+import StatsCorner from './components/StatsCorner';
 import './styles.css';
 
 // Lazy load components
@@ -76,6 +77,9 @@ function App() {
           
           <Footer />
         </div>
+        
+        {/* 右下角統計 */}
+        <StatsCorner />
         
         {/* 回到頂部按鈕 */}
         <ScrollToTop />

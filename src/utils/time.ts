@@ -1,6 +1,6 @@
 export const calculateUptime = () => {
   // 設定為實際網站上線日期
-  const startDate = new Date('2025-01-01T00:00:00');
+  const startDate = new Date('2025-03-01T00:00:00');
   const now = new Date();
   const diff = now.getTime() - startDate.getTime();
   

@@ -1,16 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { BarChart3, Eye, MousePointer, FileText, Clock } from 'lucide-react';
+import { Clock } from 'lucide-react';
 import { calculateUptime } from '../utils/time';
-import { getAnalyticsData } from '../utils/analytics';
 
 const Footer: React.FC = () => {
   const [uptime, setUptime] = useState(calculateUptime());
-  const [analytics, setAnalytics] = useState({
-    totalPosts: 0,
-    totalWords: 0,
-    totalClicks: 0,
-    totalViews: 0
-  });
 
   useEffect(() => {
     // Update uptime every second
@@ -18,109 +11,37 @@ const Footer: React.FC = () => {
       setUptime(calculateUptime());
     }, 1000);
 
-    // Load analytics data
-    const loadAnalytics = async () => {
-      const data = await getAnalyticsData();
-      setAnalytics(data);
-    };
-
-    loadAnalytics();
-
     return () => clearInterval(interval);
   }, []);
-
-  const stats = [
-    {
-      icon: FileText,
-      label: '文章數量',
-      value: analytics.totalPosts,
-      color: 'text-blue-400'
-    },
-    {
-      icon: BarChart3,
-      label: '總字數',
-      value: analytics.totalWords.toLocaleString(),
-      color: 'text-green-400'
-    },
-    {
-      icon: MousePointer,
-      label: '點擊次數',
-      value: analytics.totalClicks > 0 ? analytics.totalClicks.toLocaleString() : '-',
-      color: 'text-yellow-400'
-    },
-    {
-      icon: Eye,
-      label: '觀看次數',
-      value: analytics.totalViews > 0 ? analytics.totalViews.toLocaleString() : '-',
-      color: 'text-purple-400'
-    }
-  ];
 
   return (
     <footer className="glassmorphism-card mt-16 p-8">
       <div className="container mx-auto">
-        {/* Statistics */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-8">
-          {stats.map((stat) => (
-            <div key={stat.label} className="text-center">
-              <div className="flex justify-center mb-2">
-                <stat.icon className={`w-6 h-6 ${stat.color}`} />
-              </div>
-              <div className="text-2xl font-bold text-white mb-1">
-                {stat.value}
-              </div>
-              <div className="text-sm text-white/70">
-                {stat.label}
-              </div>
-            </div>
-          ))}
-        </div>
-
-        {/* Uptime - 縮小版本 */}
-        <div className="glassmorphism-mini p-4 mb-6">
-          <div className="flex items-center justify-center mb-3">
-            <Clock className="w-4 h-4 text-blue-400 mr-2" />
-            <h3 className="text-base font-semibold text-white">網站運行時間</h3>
-          </div>
-          <div className="text-center">
-            <div className="text-xs text-white/70 mb-2">
-              自 2025年1月1日 起運行
-            </div>
-            <div className="flex justify-center space-x-3 text-center">
-              <div className="glassmorphism-mini px-2 py-1 rounded">
-                <div className="text-lg font-bold text-white">
-                  {uptime.days}
-                </div>
-                <div className="text-xs text-white/70">天</div>
-              </div>
-              <div className="glassmorphism-mini px-2 py-1 rounded">
-                <div className="text-lg font-bold text-white">
-                  {uptime.hours}
-                </div>
-                <div className="text-xs text-white/70">時</div>
-              </div>
-              <div className="glassmorphism-mini px-2 py-1 rounded">
-                <div className="text-lg font-bold text-white">
-                  {uptime.minutes}
-                </div>
-                <div className="text-xs text-white/70">分</div>
-              </div>
-              <div className="glassmorphism-mini px-2 py-1 rounded">
-                <div className="text-lg font-bold text-white">
-                  {uptime.seconds}
-                </div>
-                <div className="text-xs text-white/70">秒</div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Copyright */}
-        <div className="text-center text-white/70 text-sm border-t border-white/20 pt-6">
+        {/* Copyright and Uptime */}
+        <div className="text-center text-white/70 text-sm">
           <p>© 2025 HYJ's Blog. 用 ❤️ 製作</p>
           <p className="mt-2">
             Powered by React 18 & Vite | Inspired by Hexo & Redefine Theme
           </p>
+          
+          {/* Uptime - 融合在頁尾中 */}
+          <div className="mt-4 flex items-center justify-center">
+            <Clock className="w-4 h-4 text-blue-400 mr-2" />
+            <span className="text-white/60 mr-3">運行時間:</span>
+            <div className="flex items-center space-x-2">
+              <span className="text-white font-medium">{uptime.days}</span>
+              <span className="text-white/60">天</span>
+              <span className="text-white font-medium">{uptime.hours}</span>
+              <span className="text-white/60">時</span>
+              <span className="text-white font-medium">{uptime.minutes}</span>
+              <span className="text-white/60">分</span>
+              <span className="text-white font-medium">{uptime.seconds}</span>
+              <span className="text-white/60">秒</span>
+            </div>
+          </div>
+          <div className="text-xs text-white/50 mt-1">
+            自 2025年3月1日 起穩定運行
+          </div>
         </div>
       </div>
     </footer>
