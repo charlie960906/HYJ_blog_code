@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useSearchParams, useParams } from 'react-router-dom';
 import PostCard from '../components/PostCard';
 import Sidebar from '../components/Sidebar';
@@ -13,6 +13,9 @@ const HomePage: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [searchParams] = useSearchParams();
   const { category } = useParams();
+  const sidebarRef = useRef<HTMLDivElement>(null);
+  const mainContentRef = useRef<HTMLDivElement>(null);
+  const footerRef = useRef<HTMLDivElement>(null);
 
   const searchQuery = searchParams.get('search');
   const tagFilter = searchParams.get('tag');
@@ -21,32 +24,27 @@ const HomePage: React.FC = () => {
     const loadPosts = async () => {
       try {
         setLoading(true);
-        
         let allPosts: Post[];
-        
+
         if (category) {
-          // 如果有分類參數，只載入該分類的文章
           allPosts = await getPostsByCategory(category);
         } else {
-          // 否則載入所有文章
           allPosts = await getAllPosts();
         }
-        
+
         setPosts(allPosts);
-        
-        // 應用過濾器
+
         const filtered = filterPosts(allPosts, {
           search: searchQuery,
-          tag: tagFilter
+          tag: tagFilter,
         });
-        
+
         setFilteredPosts(filtered);
 
-        // 如果有搜尋查詢，追蹤搜尋事件
         if (searchQuery) {
           trackSearch(searchQuery, filtered.length);
         }
-        
+
       } catch (error) {
         console.error('載入文章失敗:', error);
       } finally {
@@ -57,17 +55,51 @@ const HomePage: React.FC = () => {
     loadPosts();
   }, [searchQuery, tagFilter, category]);
 
+  useEffect(() => {
+    let timeout: NodeJS.Timeout;
+    const handleScroll = () => {
+      clearTimeout(timeout);
+      timeout = setTimeout(() => {
+        if (!sidebarRef.current || !mainContentRef.current || !footerRef.current) return;
+
+        const mainContent = mainContentRef.current;
+        const footer = footerRef.current;
+        const sidebar = sidebarRef.current;
+
+        const mainContentBottom = mainContent.getBoundingClientRect().bottom;
+        const footerTop = footer.getBoundingClientRect().top;
+        const windowHeight = window.innerHeight;
+
+        if (mainContentBottom <= windowHeight && footerTop > windowHeight) {
+          sidebar.style.position = 'absolute';
+          sidebar.style.bottom = '0';
+          sidebar.style.top = 'auto';
+        } else {
+          sidebar.style.position = 'sticky';
+          sidebar.style.top = '5rem';
+          sidebar.style.bottom = 'auto';
+        }
+      }, 50);
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      clearTimeout(timeout);
+    };
+  }, []);
+
   if (loading) {
     return <LoadingSpinner />;
   }
 
   const getCategoryTitle = (cat: string) => {
     const categoryTitles: Record<string, string> = {
-      'information': '資訊文章',
-      'reviews': '產品評價',
-      'finance': '股市財經',
-      'travel': '旅行',
-      'life': '生活'
+      information: '資訊文章',
+      reviews: '評測',
+      finance: '財經',
+      travel: '旅行',
+      life: '生活',
     };
     return categoryTitles[cat] || cat;
   };
@@ -75,21 +107,16 @@ const HomePage: React.FC = () => {
   return (
     <div className="container mx-auto px-4 py-8" style={{ paddingTop: category ? '6rem' : '2rem' }}>
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* 主要內容 */}
-        <div className="lg:col-span-2">
-          {/* 分類標題 */}
+        {/* Main content on the left */}
+        <div className="order-1 lg:order-none lg:col-span-2 main-content" ref={mainContentRef}>
           {category && (
             <div className="glassmorphism-card p-6 mb-8">
               <h2 className="text-2xl font-bold text-white mb-2">
                 {getCategoryTitle(category)}
               </h2>
-              <p className="text-white/80">
-                共 {filteredPosts.length} 篇文章
-              </p>
+              <p className="text-white/80">共 {filteredPosts.length} 篇文章</p>
             </div>
           )}
-
-          {/* 搜尋結果提示 */}
           {searchQuery && (
             <div className="glassmorphism-card p-4 mb-8">
               <p className="text-white/80">
@@ -97,8 +124,6 @@ const HomePage: React.FC = () => {
               </p>
             </div>
           )}
-          
-          {/* 標籤過濾提示 */}
           {tagFilter && (
             <div className="glassmorphism-card p-4 mb-8">
               <p className="text-white/80">
@@ -106,8 +131,6 @@ const HomePage: React.FC = () => {
               </p>
             </div>
           )}
-
-          {/* 文章列表 */}
           <div className="space-y-8">
             {filteredPosts.length === 0 ? (
               <div className="glassmorphism-card p-8 text-center">
@@ -120,19 +143,17 @@ const HomePage: React.FC = () => {
               </div>
             ) : (
               filteredPosts.map((post, index) => (
-                <PostCard
-                  key={post.slug}
-                  post={post}
-                  isLazy={index > 2} // 前 3 篇文章立即載入，其餘懶載入
-                />
+                <PostCard key={post.slug} post={post} isLazy={index > 2} />
               ))
             )}
           </div>
         </div>
 
-        {/* 側邊欄 */}
-        <div className="lg:col-span-1">
-          <Sidebar />
+        {/* Sidebar on the right */}
+        <div className="order-2 lg:order-none lg:col-span-1 sidebar-container">
+          <div className="sidebar-content" ref={sidebarRef}>
+            <Sidebar />
+          </div>
         </div>
       </div>
     </div>

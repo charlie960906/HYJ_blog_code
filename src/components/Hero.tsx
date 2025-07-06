@@ -2,11 +2,11 @@ import React, { useState, useEffect } from 'react';
 
 const Hero: React.FC = () => {
   const subtitles = [
-    "分享資訊與知識",
-    "探索產品評價", 
-    "洞悉股市財經",
-    "記錄生活點滴",
-    "技術研究分享"
+    "I'm not the best but I work hard",
+    "Keep fighting, Keep pushing", 
+    "謝謝你在這個世界的角落發現了我",
+    "持續更新中...",
+    "這個世界很大等著我去探索"
   ];
 
   const [currentSubtitle, setCurrentSubtitle] = useState(0);

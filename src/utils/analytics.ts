@@ -2,6 +2,7 @@ import { getPostStats } from './posts';
 
 export const getAnalyticsData = async () => {
   const { totalPosts, totalWords } = await getPostStats();
+  
   return {
     totalPosts,
     totalWords
@@ -10,14 +11,14 @@ export const getAnalyticsData = async () => {
 
 // GA4 事件追蹤函數 - 保留但簡化
 export const trackEvent = (eventName: string, parameters: Record<string, any> = {}) => {
-  if (typeof window.gtag !== 'undefined') {
-    window.gtag('event', eventName, parameters);
+  if (typeof gtag !== 'undefined') {
+    gtag('event', eventName, parameters);
   }
 };
 
 export const trackPageView = (pageTitle: string, pageLocation: string) => {
-  if (typeof window.gtag !== 'undefined') {
-    window.gtag('event', 'page_view', {
+  if (typeof gtag !== 'undefined') {
+    gtag('event', 'page_view', {
       page_title: pageTitle,
       page_location: pageLocation,
       content_group1: 'blog_post'

@@ -3,8 +3,9 @@ import { parseMarkdown } from './markdown';
 
 // 獲取所有可用的文章檔案名稱
 const getAvailablePostSlugs = (): string[] => {
-  // 這些是 posts/ 資料夾中實際存在的檔案
+  // 這些是 public/posts/ 資料夾中實際存在的檔案
   return [
+    'about-me-introduction',
     'react-18-features',
     'iphone-15-review', 
     'stock-market-2025',

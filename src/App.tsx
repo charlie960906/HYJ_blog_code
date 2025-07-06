@@ -6,7 +6,6 @@ import Footer from './components/Footer';
 import LoadingSpinner from './components/LoadingSpinner';
 import ScrollProgress from './components/ScrollProgress';
 import ScrollToTop from './components/ScrollToTop';
-import StatsCorner from './components/StatsCorner';
 import './styles.css';
 
 // Lazy load components
@@ -46,7 +45,7 @@ function App() {
         <div 
           className="fixed inset-0 bg-cover bg-center bg-no-repeat transition-all duration-300"
           style={{
-            backgroundImage: `url('https://images.unsplash.com/photo-1600585154340-be6161a56a0c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80')`,
+            backgroundImage: `url('/public/background.jpg')`,
             filter: `blur(${Math.min(scrollY / 10, 20)}px)`,
             opacity: 0.3
           }}
@@ -77,9 +76,6 @@ function App() {
           
           <Footer />
         </div>
-        
-        {/* 右下角統計 */}
-        <StatsCorner />
         
         {/* 回到頂部按鈕 */}
         <ScrollToTop />

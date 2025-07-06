@@ -42,10 +42,10 @@ export const getTagCategories = async () => {
   // 根據標籤內容分類
   const categories = {
     technology: tags.filter(tag => 
-      ['技術', 'React', 'TypeScript', '前端開發', '資訊'].includes(tag.name)
+      ['題解','技術', 'AI', '開發', '科技', '資訊'].includes(tag.name)
     ),
     reviews: tags.filter(tag => 
-      ['產品評價', 'iPhone', '手機', '評測'].includes(tag.name)
+      ['評測', '電影', '影集', '遊戲'].includes(tag.name)
     ),
     finance: tags.filter(tag => 
       ['股市財經', '投資', '理財', '股市'].includes(tag.name)

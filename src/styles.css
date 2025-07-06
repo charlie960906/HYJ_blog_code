@@ -42,6 +42,31 @@
   border-radius: 12px;
 }
 
+/* Sidebar container */
+.sidebar-container {
+  position: relative;
+  height: 100%;
+}
+
+/* Sidebar content */
+.sidebar-content {
+  position: sticky;
+  top: 5rem;
+  width: 100%;
+}
+
+/* Main content area */
+.main-content {
+  min-height: calc(100vh - 4rem);
+}
+
+/* Footer */
+.footer {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
 /* Typing animation */
 .typing-cursor {
   animation: blink 1s infinite;
@@ -91,7 +116,7 @@
 /* Search container improvements */
 .search-container {
   position: relative;
-  height: 40px; /* 固定高度避免布局變化 */
+  height: 40px;
 }
 
 /* Prose styles for markdown content */
@@ -242,9 +267,11 @@ button:hover,
 }
 
 @media (max-width: 1024px) {
-  /* 中等螢幕的導航調整 */
   .navbar-items {
     display: none;
+  }
+  .sidebar-content {
+    position: static;
   }
 }
 

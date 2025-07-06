@@ -51,7 +51,7 @@ const Navbar: React.FC = () => {
   const navItems = [
     { name: '首頁', path: '/' },
     { name: '資訊', path: '/category/information' },
-    { name: '評價', path: '/category/reviews' },
+    { name: '評測', path: '/category/reviews' },
     { name: '財經', path: '/category/finance' },
     { name: '標籤', path: '/tags' },
     { name: '關於', path: '/about' },
@@ -64,14 +64,16 @@ const Navbar: React.FC = () => {
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <Link to="/" className="flex items-center space-x-3 flex-shrink-0">
-            <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-500 rounded-lg flex items-center justify-center text-white font-bold">
-              HYJ
-            </div>
+            <img
+              src="/public/icon.jpg" // 替換為您的圖標路徑
+              alt="HYJ's Blog Logo"
+              className="w-10 h-10 rounded-lg object-contain"
+            />
             <span className="text-xl font-semibold text-white hidden sm:block">
               HYJ's Blog
             </span>
           </Link>
-
+          
           {/* 桌面版導航 */}
           <div className="hidden lg:flex items-center space-x-6">
             {navItems.map((item) => (
