@@ -5,13 +5,7 @@ import { parseMarkdown } from './markdown';
 const getAvailablePostSlugs = (): string[] => {
   // 這些是 public/posts/ 資料夾中實際存在的檔案
   return [
-    'about-me-introduction',
-    'react-18-features',
-    'iphone-15-review', 
-    'stock-market-2025',
-    'typescript-best-practices',
-    'travel-japan-kyoto',
-    'productivity-tools-2025'
+    'PE_zj_a225'
   ];
 };
 
