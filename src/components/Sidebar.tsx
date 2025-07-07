@@ -1,29 +1,72 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { User, Tag as TagIcon } from 'lucide-react';
+import { getTagsWithFrequency } from '../utils/tags';
+
+interface TagData {
+  name: string;
+  count: number;
+  size: number;
+  color: string;
+}
 
 const Sidebar: React.FC = () => {
-  // 基於實際文章標籤的統計
-  const tags = [
-    { name: '技術', count: 2, color: 'bg-blue-500/20 text-blue-100 border-blue-400/30' },
-    { name: 'React', count: 1, color: 'bg-cyan-500/20 text-cyan-100 border-cyan-400/30' },
-    { name: 'TypeScript', count: 1, color: 'bg-blue-600/20 text-blue-100 border-blue-500/30' },
-    { name: '前端開發', count: 2, color: 'bg-purple-500/20 text-purple-100 border-purple-400/30' },
-    { name: '產品評價', count: 1, color: 'bg-green-500/20 text-green-100 border-green-400/30' },
-    { name: 'iPhone', count: 1, color: 'bg-gray-500/20 text-gray-100 border-gray-400/30' },
-    { name: '手機', count: 1, color: 'bg-indigo-500/20 text-indigo-100 border-indigo-400/30' },
-    { name: '股市財經', count: 1, color: 'bg-yellow-500/20 text-yellow-100 border-yellow-400/30' },
-    { name: '投資', count: 1, color: 'bg-green-600/20 text-green-100 border-green-500/30' },
-    { name: '理財', count: 1, color: 'bg-emerald-500/20 text-emerald-100 border-emerald-400/30' },
-    { name: '旅行', count: 1, color: 'bg-teal-500/20 text-teal-100 border-teal-400/30' },
-    { name: '日本', count: 1, color: 'bg-red-500/20 text-red-100 border-red-400/30' },
-    { name: '京都', count: 1, color: 'bg-pink-500/20 text-pink-100 border-pink-400/30' },
-    { name: '攻略', count: 1, color: 'bg-orange-500/20 text-orange-100 border-orange-400/30' },
-    { name: '生活', count: 1, color: 'bg-lime-500/20 text-lime-100 border-lime-400/30' },
-    { name: '工具', count: 1, color: 'bg-violet-500/20 text-violet-100 border-violet-400/30' },
-    { name: '效率', count: 1, color: 'bg-sky-500/20 text-sky-100 border-sky-400/30' },
-    { name: '推薦', count: 1, color: 'bg-rose-500/20 text-rose-100 border-rose-400/30' }
-  ];
+  // 狀態管理：標籤列表、載入狀態、錯誤狀態
+  const [tags, setTags] = useState<TagData[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  // 動態讀取標籤資料
+  useEffect(() => {
+    const loadTags = async () => {
+      try {
+        setIsLoading(true);
+        const tagData = await getTagsWithFrequency();
+
+        // 預定義顏色組合（與 TagCloudPage 一致）
+        const colors = [
+          'bg-red-500/20 text-red-100 border-red-400/30',
+          'bg-cyan-500/20 text-cyan-100 border-cyan-400/30',
+          'bg-blue-500/20 text-blue-100 border-blue-400/30',
+          'bg-green-500/20 text-green-100 border-green-400/30',
+          'bg-yellow-500/20 text-yellow-100 border-yellow-400/30',
+          'bg-purple-500/20 text-purple-100 border-purple-400/30',
+          'bg-teal-500/20 text-teal-100 border-teal-400/30',
+          'bg-indigo-500/20 text-indigo-100 border-indigo-400/30',
+          'bg-pink-500/20 text-pink-100 border-pink-400/30',
+          'bg-sky-500/20 text-sky-100 border-sky-400/30',
+          'bg-emerald-500/20 text-emerald-100 border-emerald-400/30',
+          'bg-orange-500/20 text-orange-100 border-orange-400/30',
+          'bg-lime-500/20 text-lime-100 border-lime-400/30',
+          'bg-violet-500/20 text-violet-100 border-violet-400/30',
+          'bg-rose-500/20 text-rose-100 border-rose-400/30',
+          'bg-gray-500/20 text-gray-100 border-gray-400/30',
+          'bg-blue-600/20 text-blue-100 border-blue-500/30',
+          'bg-green-600/20 text-green-100 border-green-500/30',
+          'bg-purple-600/20 text-purple-100 border-purple-500/30',
+          'bg-teal-600/20 text-teal-100 border-teal-500/30'
+        ];
+
+        // 驗證並過濾資料，分配顏色，按 count 降序排序
+        const processedTags = tagData
+          .filter((tag: any) => tag.name && typeof tag.count === 'number' && typeof tag.size === 'number')
+          .map((tag: any, index: number) => ({
+            ...tag,
+            color: colors[index % colors.length] // 循環分配顏色
+          }))
+          .sort((a: TagData, b: TagData) => b.count - a.count || a.name.localeCompare(b.name)); // 按 count 降序，若 count 相同則按 name 升序
+
+        setTags(processedTags);
+      } catch (err) {
+        setError('載入標籤失敗，請稍後再試');
+        console.error('Failed to load tags:', err);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadTags();
+  }, []); // 空依賴陣列，僅在元件掛載時執行一次
 
   return (
     <aside className="space-y-6">
@@ -35,10 +78,10 @@ const Sidebar: React.FC = () => {
         </div>
         <div className="space-y-3">
           <div className="w-20 h-20 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center text-white font-bold text-2xl mx-auto">
-            HYJ
+            老黃
           </div>
           <p className="text-white/80 text-sm text-center leading-relaxed">
-            熱愛分享知識與經驗的部落客，專注於資訊科技、產品評測、股市分析等領域。
+            目前主要興趣在於演算法、人工智慧、財經投資等～
           </p>
           <div className="flex justify-center">
             <Link
@@ -58,15 +101,25 @@ const Sidebar: React.FC = () => {
           <h3 className="text-xl font-semibold text-white">標籤雲</h3>
         </div>
         <div className="flex flex-wrap gap-2">
-          {tags.slice(0, 12).map((tag) => (
-            <Link
-              key={tag.name}
-              to={`/?tag=${encodeURIComponent(tag.name)}`}
-              className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium border transition-all duration-200 hover:scale-105 ${tag.color}`}
-            >
-              {tag.name} ({tag.count})
-            </Link>
-          ))}
+          {isLoading ? (
+            <p className="text-gray-400">載入中...</p>
+          ) : error ? (
+            <p className="text-red-400">{error}</p>
+          ) : tags.length > 0 ? (
+            tags
+              .slice(0, 12)
+              .map((tag) => (
+                <Link
+                  key={tag.name} // 假設 name 是唯一的，若有 id 則使用 tag.id
+                  to={`/?tag=${encodeURIComponent(tag.name)}`}
+                  className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium border transition-all duration-200 hover:scale-105 ${tag.color || 'bg-gray-500/20 text-gray-100 border-gray-400/30'}`}
+                >
+                  {tag.name} ({tag.count})
+                </Link>
+              ))
+          ) : (
+            <p className="text-gray-400">暫無標籤</p>
+          )}
         </div>
         <div className="mt-4 text-center">
           <Link

@@ -1,9 +1,7 @@
 import { Post } from '../types/post';
 import { parseMarkdown } from './markdown';
 
-// 獲取所有可用的文章檔案名稱
 const getAvailablePostSlugs = (): string[] => {
-  // 這些是 public/posts/ 資料夾中實際存在的檔案
   return [
     'PE_zj_a225'
   ];
