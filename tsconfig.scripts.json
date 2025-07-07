@@ -12,3 +12,4 @@
   },
   "include": ["scripts"]
 }
+// npx tsx scripts/generate-sitemap.ts
