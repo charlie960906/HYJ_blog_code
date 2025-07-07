@@ -11,19 +11,15 @@ interface TagData {
 }
 
 const Sidebar: React.FC = () => {
-  // 狀態管理：標籤列表、載入狀態、錯誤狀態
   const [tags, setTags] = useState<TagData[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // 動態讀取標籤資料
   useEffect(() => {
     const loadTags = async () => {
       try {
         setIsLoading(true);
         const tagData = await getTagsWithFrequency();
-
-        // 預定義顏色組合（與 TagCloudPage 一致）
         const colors = [
           'bg-red-500/20 text-red-100 border-red-400/30',
           'bg-cyan-500/20 text-cyan-100 border-cyan-400/30',
@@ -47,14 +43,13 @@ const Sidebar: React.FC = () => {
           'bg-teal-600/20 text-teal-100 border-teal-500/30'
         ];
 
-        // 驗證並過濾資料，分配顏色，按 count 降序排序
         const processedTags = tagData
           .filter((tag: any) => tag.name && typeof tag.count === 'number' && typeof tag.size === 'number')
           .map((tag: any, index: number) => ({
             ...tag,
-            color: colors[index % colors.length] // 循環分配顏色
+            color: colors[index % colors.length]
           }))
-          .sort((a: TagData, b: TagData) => b.count - a.count || a.name.localeCompare(b.name)); // 按 count 降序，若 count 相同則按 name 升序
+          .sort((a: TagData, b: TagData) => b.count - a.count || a.name.localeCompare(b.name));
 
         setTags(processedTags);
       } catch (err) {
@@ -66,7 +61,7 @@ const Sidebar: React.FC = () => {
     };
 
     loadTags();
-  }, []); // 空依賴陣列，僅在元件掛載時執行一次
+  }, []);
 
   return (
     <aside className="space-y-6">
@@ -77,9 +72,8 @@ const Sidebar: React.FC = () => {
           <h3 className="text-xl font-semibold text-white">關於我</h3>
         </div>
         <div className="space-y-3">
-          <div className="w-20 h-20 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center text-white font-bold text-2xl mx-auto">
-            老黃
-          </div>
+          <img src="images/my.jpg" alt="HYJ's Image" className="w-32 h-32 rounded-full mx-auto mb-4 object-cover" />
+          <p className="text-white text-lg font-bold text-center mb-2">老黃</p>
           <p className="text-white/80 text-sm text-center leading-relaxed">
             目前主要興趣在於演算法、人工智慧、財經投資等～
           </p>
@@ -110,7 +104,7 @@ const Sidebar: React.FC = () => {
               .slice(0, 12)
               .map((tag) => (
                 <Link
-                  key={tag.name} // 假設 name 是唯一的，若有 id 則使用 tag.id
+                  key={tag.name}
                   to={`/?tag=${encodeURIComponent(tag.name)}`}
                   className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium border transition-all duration-200 hover:scale-105 ${tag.color || 'bg-gray-500/20 text-gray-100 border-gray-400/30'}`}
                 >
