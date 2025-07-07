@@ -45,7 +45,7 @@ function App() {
         <div 
           className="fixed inset-0 bg-cover bg-center bg-no-repeat transition-all duration-300"
           style={{
-            backgroundImage: `url('/public/background.jpg')`,
+            backgroundImage: `url('images/background.jpg')`,
             filter: `blur(${Math.min(scrollY / 10, 20)}px)`,
             opacity: 0.3
           }}

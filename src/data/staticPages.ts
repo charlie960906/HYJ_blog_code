@@ -2,42 +2,40 @@ const staticPages = {
   about: {
     title: '關於我',
     content: `
-      <div class="space-y-6">
-        <div class="text-center">
-          <div class="w-32 h-32 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center text-white font-bold text-4xl mx-auto mb-6">
-            HYJ
+        <div class="space-y-6">
+          <div class="text-center">
+            <img src="images/my.jpg" alt="HYJ's Image" class="w-32 h-32 rounded-full mx-auto mb-6 object-cover">
+            <h2 class="text-2xl font-bold text-white mb-4">Hello, I'm HYJ</h2>
           </div>
-          <h2 class="text-2xl font-bold text-white mb-4">Hello, I'm HYJ</h2>
         </div>
         
         <div class="glassmorphism-mini p-6 rounded-lg">
-          <h3 class="text-xl font-semibold text-white mb-4">關於這個部落格</h3>
-          <p class="text-white/80 leading-relaxed">
-            歡迎來到我的個人部落格！這裡是我分享知識、經驗和想法的地方。
-            我專注於資訊科技、產品評測、股市分析等領域，希望能夠透過文字
-            與大家交流學習。
-          </p>
+          <h3 class="text-xl font-semibold text-white mb-4">關於這個BLOG</h3>
+          <p class="text-white/80 leading-relaxed">嗨嗨嗨！！！歡迎你發現我的BLOG！</p>
+          <p class="text-white/80 leading-relaxed">這個BLOG主要寫題解、演算法、財經時事和各種評測～</p>
+          <p class="text-white/80 leading-relaxed"謝謝你看到這邊～～</p>
         </div>
         
         <div class="glassmorphism-mini p-6 rounded-lg">
-          <h3 class="text-xl font-semibold text-white mb-4">我的專長</h3>
+          <h3 class="text-xl font-semibold text-white mb-4">我的興趣</h3>
           <ul class="text-white/80 space-y-2">
-            <li>• 前端開發 (React, Vue, TypeScript)</li>
-            <li>• 產品評測與分析</li>
-            <li>• 股市投資策略</li>
-            <li>• 技術寫作</li>
+            <li>• 演算法</li>
+            <li>• 人工智慧 AI</li>
+            <li>• 股市財經</li>
+            <li>• 影集</li>
           </ul>
         </div>
         
         <div class="glassmorphism-mini p-6 rounded-lg">
-          <h3 class="text-xl font-semibold text-white mb-4">聯絡方式</h3>
+          <h3 class="text-xl font-semibold text-white mb-4">聯絡我</h3>
           <p class="text-white/80">
-            如果您有任何問題或建議，歡迎透過以下方式聯絡我：
+            歡迎找我聊聊天～～～
           </p>
           <div class="mt-4 space-y-2 text-white/80">
-            <p>📧 Email: contact@hyj-blog.com</p>
-            <p>🐦 Twitter: @hyj_blog</p>
-            <p>💼 LinkedIn: /in/hyj</p>
+            <p>Email: <a href="mailto:charlie960906@gmail.com" class="text-white hover:underline">charlie960906@gmail.com</a></p>
+            <p>FB: <a href="https://www.facebook.com/profile.php?id=黃宥鈞" class="text-white hover:underline">黃宥鈞</a></p>
+            <p>IG: <a href="https://www.instagram.com/hyjcharlie960906" class="text-white hover:underline">hyjcharlie960906</a></p>
+            <p>Company: <a href="https://www.hyjdevelop.com" class="text=white hover:underline">HYJdevelop</a></p>
           </div>
         </div>
       </div>
@@ -48,123 +46,29 @@ const staticPages = {
     content: `
       <div class="space-y-6">
         <div class="glassmorphism-mini p-6 rounded-lg">
-          <h3 class="text-xl font-semibold text-white mb-4">技術部落格</h3>
+          <h3 class="text-xl font-semibold text-white mb-4">好友連結</h3>
           <div class="space-y-4">
             <div class="flex items-center justify-between p-4 bg-white/5 rounded-lg hover:bg-white/10 transition-colors">
               <div>
-                <h4 class="text-white font-medium">阮一峰的網路日誌</h4>
-                <p class="text-white/70 text-sm">分享前端技術與程式設計心得</p>
-                <p class="text-blue-400 text-xs mt-1">ruanyifeng.com</p>
+                <h4 class="text-white font-medium">倫敦鐵喬的Web</h4>
+                <p class="text-white/70 text-sm">因為學測而放棄修網頁的超強美宣</p>
+                <p class="text-blue-400 text-xs mt-1">bone108.hyjdevelop.com</p>
               </div>
-              <a href="https://www.ruanyifeng.com/blog/" target="_blank" rel="noopener noreferrer" class="text-blue-400 hover:text-blue-300 text-sm">
-                訪問 →
+              <a href="https://www.bone1018.hyjdevelop.com" target="_blank" rel="noopener noreferrer" class="text-blue-400 hover:text-blue-300 text-sm">
+                點擊查看 →
               </a>
             </div>
             
             <div class="flex items-center justify-between p-4 bg-white/5 rounded-lg hover:bg-white/10 transition-colors">
               <div>
-                <h4 class="text-white font-medium">TechBridge 技術共筆部落格</h4>
-                <p class="text-white/70 text-sm">台灣技術社群的優質內容分享</p>
-                <p class="text-blue-400 text-xs mt-1">blog.techbridge.cc</p>
+                <h4 class="text-white font-medium">鯊魚YY的BLOG</h4>
+                <p class="text-white/70 text-sm">很久沒有在寫文章的鯊魚YY</p>
+                <p class="text-blue-400 text-xs mt-1">larryeng.github.io</p>
               </div>
-              <a href="https://blog.techbridge.cc/" target="_blank" rel="noopener noreferrer" class="text-blue-400 hover:text-blue-300 text-sm">
-                訪問 →
+              <a href="https://larryeng.github.io/" target="_blank" rel="noopener noreferrer" class="text-blue-400 hover:text-blue-300 text-sm">
+                點擊查看 →
               </a>
             </div>
-            
-            <div class="flex items-center justify-between p-4 bg-white/5 rounded-lg hover:bg-white/10 transition-colors">
-              <div>
-                <h4 class="text-white font-medium">Huli's Blog</h4>
-                <p class="text-white/70 text-sm">深入淺出的程式教學與心得分享</p>
-                <p class="text-blue-400 text-xs mt-1">blog.huli.tw</p>
-              </div>
-              <a href="https://blog.huli.tw/" target="_blank" rel="noopener noreferrer" class="text-blue-400 hover:text-blue-300 text-sm">
-                訪問 →
-              </a>
-            </div>
-          </div>
-        </div>
-        
-        <div class="glassmorphism-mini p-6 rounded-lg">
-          <h3 class="text-xl font-semibold text-white mb-4">投資理財</h3>
-          <div class="space-y-4">
-            <div class="flex items-center justify-between p-4 bg-white/5 rounded-lg hover:bg-white/10 transition-colors">
-              <div>
-                <h4 class="text-white font-medium">綠角財經筆記</h4>
-                <p class="text-white/70 text-sm">專業的投資理財知識分享</p>
-                <p class="text-blue-400 text-xs mt-1">greenhornfinancefootnote.blogspot.com</p>
-              </div>
-              <a href="https://greenhornfinancefootnote.blogspot.com/" target="_blank" rel="noopener noreferrer" class="text-blue-400 hover:text-blue-300 text-sm">
-                訪問 →
-              </a>
-            </div>
-            
-            <div class="flex items-center justify-between p-4 bg-white/5 rounded-lg hover:bg-white/10 transition-colors">
-              <div>
-                <h4 class="text-white font-medium">Mr. Market 市場先生</h4>
-                <p class="text-white/70 text-sm">投資理財教學與市場分析</p>
-                <p class="text-blue-400 text-xs mt-1">rich01.com</p>
-              </div>
-              <a href="https://rich01.com/" target="_blank" rel="noopener noreferrer" class="text-blue-400 hover:text-blue-300 text-sm">
-                訪問 →
-              </a>
-            </div>
-          </div>
-        </div>
-        
-        <div class="glassmorphism-mini p-6 rounded-lg">
-          <h3 class="text-xl font-semibold text-white mb-4">科技評測</h3>
-          <div class="space-y-4">
-            <div class="flex items-center justify-between p-4 bg-white/5 rounded-lg hover:bg-white/10 transition-colors">
-              <div>
-                <h4 class="text-white font-medium">電腦王阿達</h4>
-                <p class="text-white/70 text-sm">3C 產品評測與科技新聞</p>
-                <p class="text-blue-400 text-xs mt-1">kocpc.com.tw</p>
-              </div>
-              <a href="https://www.kocpc.com.tw/" target="_blank" rel="noopener noreferrer" class="text-blue-400 hover:text-blue-300 text-sm">
-                訪問 →
-              </a>
-            </div>
-            
-            <div class="flex items-center justify-between p-4 bg-white/5 rounded-lg hover:bg-white/10 transition-colors">
-              <div>
-                <h4 class="text-white font-medium">T客邦</h4>
-                <p class="text-white/70 text-sm">專業的科技媒體與產品評測</p>
-                <p class="text-blue-400 text-xs mt-1">techbang.com</p>
-              </div>
-              <a href="https://www.techbang.com/" target="_blank" rel="noopener noreferrer" class="text-blue-400 hover:text-blue-300 text-sm">
-                訪問 →
-              </a>
-            </div>
-          </div>
-        </div>
-        
-        <div class="glassmorphism-mini p-6 rounded-lg">
-          <h3 class="text-xl font-semibold text-white mb-4">生活旅遊</h3>
-          <div class="space-y-4">
-            <div class="flex items-center justify-between p-4 bg-white/5 rounded-lg hover:bg-white/10 transition-colors">
-              <div>
-                <h4 class="text-white font-medium">小氣少年的部落格</h4>
-                <p class="text-white/70 text-sm">日本關西旅遊攻略專家</p>
-                <p class="text-blue-400 text-xs mt-1">nicklee.tw</p>
-              </div>
-              <a href="https://nicklee.tw/" target="_blank" rel="noopener noreferrer" class="text-blue-400 hover:text-blue-300 text-sm">
-                訪問 →
-              </a>
-            </div>
-            
-            <div class="flex items-center justify-between p-4 bg-white/5 rounded-lg hover:bg-white/10 transition-colors">
-              <div>
-                <h4 class="text-white font-medium">背包客棧</h4>
-                <p class="text-white/70 text-sm">自助旅行者的交流平台</p>
-                <p class="text-blue-400 text-xs mt-1">backpackers.com.tw</p>
-              </div>
-              <a href="https://www.backpackers.com.tw/" target="_blank" rel="noopener noreferrer" class="text-blue-400 hover:text-blue-300 text-sm">
-                訪問 →
-              </a>
-            </div>
-          </div>
-        </div>
         
         <div class="glassmorphism-mini p-6 rounded-lg">
           <h3 class="text-xl font-semibold text-white mb-4">推薦工具</h3>
@@ -182,33 +86,23 @@ const staticPages = {
             <div class="p-4 bg-white/5 rounded-lg">
               <h4 class="text-white font-medium mb-2">學習資源</h4>
               <ul class="text-white/70 text-sm space-y-1">
-                <li>• <a href="https://developer.mozilla.org/" target="_blank" rel="noopener noreferrer" class="text-blue-400 hover:text-blue-300">MDN Web Docs</a></li>
-                <li>• <a href="https://stackoverflow.com/" target="_blank" rel="noopener noreferrer" class="text-blue-400 hover:text-blue-300">Stack Overflow</a></li>
-                <li>• <a href="https://www.youtube.com/" target="_blank" rel="noopener noreferrer" class="text-blue-400 hover:text-blue-300">YouTube</a></li>
-                <li>• <a href="https://www.coursera.org/" target="_blank" rel="noopener noreferrer" class="text-blue-400 hover:text-blue-300">Coursera</a></li>
+                <li>• <a href="https://cs.cysh.cy.edu.tw/index.html" target="_blank" rel="noopener noreferrer" class="text-blue-400 hover:text-blue-300">CCSC@CYSH</a></li>
+                <li>• <a href="https://drive.google.com/drive/u/0/folders/10hZCMHH0YgsfguVZCHU7EYiG8qJE5f-m" target="_blank" rel="noopener noreferrer" class="text-blue-400 hover:text-blue-300">吳邦一教授的ap325</a></li>
+                <li>• <a href="https://www.youtube.com/channel/UC2ggjtuuWvxrHHHiaDH1dlQ" target="_blank" rel="noopener noreferrer" class="text-blue-400 hover:text-blue-300">台大李弘毅教授的人工智慧開放課程</a></li>
               </ul>
             </div>
           </div>
         </div>
         
         <div class="glassmorphism-mini p-6 rounded-lg">
-          <h3 class="text-xl font-semibold text-white mb-4">交換連結</h3>
+          <h3 class="text-xl font-semibold text-white mb-4">音樂推推</h3>
           <p class="text-white/80 mb-4">
-            如果您也有優質的部落格，歡迎與我交換連結！請確保您的網站內容優質且更新頻繁。
+            都是我的愛！！！ 喜歡的話就存起來吧～
           </p>
-          <div class="p-4 bg-white/5 rounded-lg">
-            <h4 class="text-white font-medium mb-2">本站資訊</h4>
-            <ul class="text-white/70 text-sm space-y-1">
-              <li>• <strong>網站名稱:</strong> HYJ's Blog</li>
-              <li>• <strong>網站描述:</strong> 分享資訊科技、產品評測、股市分析</li>
-              <li>• <strong>網站連結:</strong> https://hyj-blog.com</li>
-              <li>• <strong>聯絡方式:</strong> contact@hyj-blog.com</li>
-            </ul>
-          </div>
+          <iframe style="border-radius:12px" src="https://open.spotify.com/embed/playlist/6YWNbabDk7DFa4FTegLZSz?utm_source=generator&theme=0" width="100%" height="352" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
           <div class="mt-4 p-3 bg-blue-500/10 border border-blue-400/30 rounded-lg">
-            <p class="text-blue-200 text-sm">
-              💡 <strong>申請條件:</strong> 網站內容健康、更新頻繁、與本站主題相關
-            </p>
+            <p class="text-blue-200 text-sm">最後在這邊獻上小小的感謝</p>
+            <p class="text-blue-200 text-sm">感謝看到最後的各位！</p>
           </div>
         </div>
       </div>
