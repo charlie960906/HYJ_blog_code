@@ -41,22 +41,22 @@ const Hero: React.FC = () => {
   }, [typeIndex, isDeleting, currentSubtitle, subtitles]);
 
   return (
-    <section className="min-h-screen flex items-center justify-center px-4 pt-20">
-      <div className="text-center">
-        <div className="glassmorphism-card p-12 max-w-4xl mx-auto">
-          <h1 className="text-6xl md:text-8xl font-bold text-white mb-6 tracking-tight">
+    <section className="hero-section min-h-screen flex items-center justify-center px-4 pt-20">
+      <div className="text-center max-w-6xl mx-auto">
+        <div className="glassmorphism-card p-6 sm:p-8 md:p-12">
+          <h1 className="hero-title text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-bold text-white mb-4 sm:mb-6 tracking-tight">
             HYJ's Blog
           </h1>
-          <div className="h-16 flex items-center justify-center">
-            <p className="text-xl md:text-2xl text-blue-100 font-light">
+          <div className="h-12 sm:h-14 md:h-16 flex items-center justify-center">
+            <p className="hero-subtitle text-base sm:text-lg md:text-xl lg:text-2xl text-blue-100 font-light px-2">
               {displayText}
               <span className="typing-cursor">|</span>
             </p>
           </div>
-          <div className="mt-8 flex justify-center space-x-4">
-            <div className="w-3 h-3 bg-blue-400 rounded-full animate-pulse"></div>
-            <div className="w-3 h-3 bg-purple-400 rounded-full animate-pulse delay-200"></div>
-            <div className="w-3 h-3 bg-pink-400 rounded-full animate-pulse delay-400"></div>
+          <div className="mt-6 sm:mt-8 flex justify-center space-x-3 sm:space-x-4">
+            <div className="w-2 h-2 sm:w-3 sm:h-3 bg-blue-400 rounded-full animate-pulse"></div>
+            <div className="w-2 h-2 sm:w-3 sm:h-3 bg-purple-400 rounded-full animate-pulse delay-200"></div>
+            <div className="w-2 h-2 sm:w-3 sm:h-3 bg-pink-400 rounded-full animate-pulse delay-400"></div>
           </div>
         </div>
       </div>
