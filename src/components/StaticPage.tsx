@@ -28,22 +28,22 @@ const StaticPage: React.FC<StaticPageProps> = ({ pageKey }) => {
   }
 
   return (
-    <div className="min-h-screen pt-24 px-4">
+    <div className="min-h-screen pt-16 sm:pt-20 lg:pt-24 px-4 static-page-container">
       <div className="container mx-auto max-w-4xl">
         <Link
           to="/"
-          className="inline-flex items-center text-white/80 hover:text-white transition-colors mb-8"
+          className="inline-flex items-center text-white/80 hover:text-white transition-colors mb-6 sm:mb-8 text-sm sm:text-base"
         >
           <ArrowLeft className="w-4 h-4 mr-2" />
           返回首頁
         </Link>
 
-        <div className="glassmorphism-card p-8">
-          <h1 className="text-4xl font-bold text-white mb-8">
+        <div className="glassmorphism-card p-4 sm:p-6 lg:p-8 static-page-content">
+          <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-white mb-6 sm:mb-8">
             {content.title}
           </h1>
           <div
-            className="prose prose-invert prose-lg max-w-none"
+            className="prose prose-invert prose-sm sm:prose-base lg:prose-lg max-w-none"
             dangerouslySetInnerHTML={{ __html: content.content }}
           />
         </div>

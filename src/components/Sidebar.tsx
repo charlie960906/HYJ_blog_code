@@ -72,15 +72,15 @@ const Sidebar: React.FC = () => {
           <h3 className="text-xl font-semibold text-white">關於我</h3>
         </div>
         <div className="space-y-3">
-          <img src="images/my.jpg" alt="HYJ's Image" className="w-32 h-32 rounded-full mx-auto mb-4 object-cover" />
-          <p className="text-white text-lg font-bold text-center mb-2">老黃</p>
-          <p className="text-white/80 text-sm text-center leading-relaxed">
+          <img src="images/my.jpg" alt="HYJ's Image" className="w-20 h-20 sm:w-24 sm:h-24 lg:w-32 lg:h-32 rounded-full mx-auto mb-3 sm:mb-4 object-cover sidebar-about-image" />
+          <p className="text-white text-base sm:text-lg font-bold text-center mb-2">老黃</p>
+          <p className="text-white/80 text-xs sm:text-sm text-center leading-relaxed">
             目前主要興趣在於演算法、人工智慧、財經投資等～
           </p>
           <div className="flex justify-center">
             <Link
               to="/about"
-              className="text-blue-400 hover:text-blue-300 text-sm font-medium transition-colors"
+              className="text-blue-400 hover:text-blue-300 text-xs sm:text-sm font-medium transition-colors"
             >
               了解更多 →
             </Link>
@@ -89,16 +89,16 @@ const Sidebar: React.FC = () => {
       </div>
 
       {/* Tag Cloud */}
-      <div className="glassmorphism-card p-6">
+      <div className="glassmorphism-card p-4 sm:p-6">
         <div className="flex items-center mb-4">
-          <TagIcon className="w-5 h-5 text-blue-400 mr-2" />
-          <h3 className="text-xl font-semibold text-white">標籤雲</h3>
+          <TagIcon className="w-4 h-4 sm:w-5 sm:h-5 text-blue-400 mr-2" />
+          <h3 className="text-lg sm:text-xl font-semibold text-white">標籤雲</h3>
         </div>
-        <div className="flex flex-wrap gap-2">
+        <div className="flex flex-wrap gap-1 sm:gap-2">
           {isLoading ? (
-            <p className="text-gray-400">載入中...</p>
+            <p className="text-gray-400 text-xs sm:text-sm">載入中...</p>
           ) : error ? (
-            <p className="text-red-400">{error}</p>
+            <p className="text-red-400 text-xs sm:text-sm">{error}</p>
           ) : tags.length > 0 ? (
             tags
               .slice(0, 12)
@@ -106,19 +106,19 @@ const Sidebar: React.FC = () => {
                 <Link
                   key={tag.name}
                   to={`/?tag=${encodeURIComponent(tag.name)}`}
-                  className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium border transition-all duration-200 hover:scale-105 ${tag.color || 'bg-gray-500/20 text-gray-100 border-gray-400/30'}`}
+                  className={`inline-flex items-center px-2 sm:px-3 py-1 rounded-full text-xs font-medium border transition-all duration-200 hover:scale-105 ${tag.color || 'bg-gray-500/20 text-gray-100 border-gray-400/30'}`}
                 >
                   {tag.name} ({tag.count})
                 </Link>
               ))
           ) : (
-            <p className="text-gray-400">暫無標籤</p>
+            <p className="text-gray-400 text-xs sm:text-sm">暫無標籤</p>
           )}
         </div>
-        <div className="mt-4 text-center">
+        <div className="mt-3 sm:mt-4 text-center">
           <Link
             to="/tags"
-            className="text-blue-400 hover:text-blue-300 text-sm font-medium transition-colors"
+            className="text-blue-400 hover:text-blue-300 text-xs sm:text-sm font-medium transition-colors"
           >
             查看所有標籤 →
           </Link>
