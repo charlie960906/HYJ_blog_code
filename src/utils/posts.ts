@@ -3,13 +3,10 @@ import { parseMarkdown } from './markdown';
 
 const getAvailablePostSlugs = (): string[] => {
   return [
-  'E1',
-  'E2',
-  'E3',
-  'E4',
-  'E5',
-  'E6',
-  'E7',
+  'Introduction__c++',
+  'Operators_c++',
+  'Statements_c++',
+  'function&variables_c++',
   'PE_zj_a225' 
 ];
 };
