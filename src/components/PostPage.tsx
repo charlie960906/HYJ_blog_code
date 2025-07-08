@@ -149,12 +149,12 @@ const PostPage: React.FC = () => {
   if (!post) return null;
 
   return (
-    <div className="min-h-screen pt-16 sm:pt-20 px-4">
+    <div className="min-h-screen pt-20 sm:pt-24 px-4">
       <div className="container mx-auto max-w-4xl">
         {/* 返回按鈕 */}
         <Link
           to="/"
-          className="inline-flex items-center text-white/80 hover:text-white transition-colors mb-6 sm:mb-8 text-sm sm:text-base"
+          className="inline-flex items-center text-white/80 hover:text-white transition-colors mb-8 sm:mb-10 text-sm sm:text-base"
         >
           <ArrowLeft className="w-4 h-4 mr-2" />
           返回首頁
