@@ -115,7 +115,8 @@ const staticPages = {
             ></iframe>
           </div>
           <div class="mt-3 sm:mt-4 p-3 bg-blue-500/10 border border-blue-400/30 rounded-lg">
-            <p class="text-blue-200 text-xs sm:text-sm">最後感謝看完整個網頁的各位~~~</p>
+            <p class="text-blue-200 text-xs sm:text-sm">最後在這邊獻上小小的感謝</p>
+            <p class="text-blue-200 text-xs sm:text-sm">感謝看到最後的各位！</p>
           </div>
         </div>
       </div>

@@ -1,32 +1,111 @@
 import { Post } from '../types/post';
 import { parseMarkdown } from './markdown';
 
-const getAvailablePostSlugs = (): string[] => {
+// 動態獲取所有可用的文章檔案
+const getAvailablePostSlugs = async (): Promise<string[]> => {
+  try {
+    // 嘗試讀取 posts 目錄的索引檔案（如果存在）
+    const response = await fetch('/posts/index.json');
+    if (response.ok) {
+      const fileList = await response.json();
+      return fileList.map((filename: string) => filename.replace('.md', ''));
+    }
+  } catch (error) {
+    // 如果沒有索引檔案，使用已知的檔案列表作為後備
+    console.warn('No index.json found, using fallback file list');
+  }
+  
+  // 後備方案：已知的檔案列表
   return [
-  'Introduction__c++',
-  'Operators_c++',
-  'Statements_c++',
-  'function&variables_c++',
-  'PE_zj_a225' 
-];
+    'about-me-introduction',
+    'react-18-features',
+    'typescript-best-practices',
+    'iphone-15-review',
+    'stock-market-2025',
+    'travel-japan-kyoto',
+    'productivity-tools-2025',
+    '123',
+    'aaa'
+  ];
+};
+
+// 嘗試從目錄結構中推斷可用檔案
+const discoverPostFiles = async (): Promise<string[]> => {
+  const knownFiles = [
+    'about-me-introduction',
+    'react-18-features', 
+    'typescript-best-practices',
+    'iphone-15-review',
+    'stock-market-2025',
+    'travel-japan-kyoto',
+    'productivity-tools-2025',
+    '123',
+    'aaa'
+  ];
+  
+  const availableFiles: string[] = [];
+  
+  // 並行檢查所有已知檔案是否存在
+  const checkPromises = knownFiles.map(async (slug) => {
+    try {
+      const response = await fetch(`/posts/${slug}.md`, { method: 'HEAD' });
+      if (response.ok) {
+        return slug;
+      }
+    } catch (error) {
+      console.warn(`File not found: ${slug}.md`);
+    }
+    return null;
+  });
+  
+  const results = await Promise.all(checkPromises);
+  results.forEach(slug => {
+    if (slug) availableFiles.push(slug);
+  });
+  
+  return availableFiles;
 };
 
 export const getAllPosts = async (): Promise<Post[]> => {
-  const slugs = getAvailablePostSlugs();
+  let slugs: string[] = [];
+  
+  try {
+    // 首先嘗試動態發現檔案
+    slugs = await discoverPostFiles();
+    
+    // 如果沒有找到任何檔案，使用後備列表
+    if (slugs.length === 0) {
+      slugs = await getAvailablePostSlugs();
+    }
+  } catch (error) {
+    console.error('Error discovering post files:', error);
+    // 使用後備列表
+    slugs = await getAvailablePostSlugs();
+  }
+  
   const posts: Post[] = [];
   
-  for (const slug of slugs) {
+  // 並行載入所有文章
+  const loadPromises = slugs.map(async (slug) => {
     try {
       const response = await fetch(`/posts/${slug}.md`);
       if (response.ok) {
         const markdown = await response.text();
         const post = parseMarkdown(markdown, slug);
-        posts.push(post);
+        return post;
+      } else {
+        console.warn(`Failed to load post: ${slug} (${response.status})`);
       }
     } catch (error) {
       console.error(`Failed to load post: ${slug}`, error);
     }
-  }
+    return null;
+  });
+  
+  const results = await Promise.all(loadPromises);
+  results.forEach(post => {
+    if (post) posts.push(post);
+  });
   
   // 按日期排序（最新的在前）
   return posts.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
@@ -117,4 +196,19 @@ export const getPostStats = async () => {
     totalPosts,
     totalWords
   };
+};
+
+// 新增：獲取所有可用的文章檔案名稱（用於調試）
+export const getAvailablePostFiles = async (): Promise<string[]> => {
+  return await discoverPostFiles();
+};
+
+// 新增：檢查特定文章是否存在
+export const checkPostExists = async (slug: string): Promise<boolean> => {
+  try {
+    const response = await fetch(`/posts/${slug}.md`, { method: 'HEAD' });
+    return response.ok;
+  } catch (error) {
+    return false;
+  }
 };
