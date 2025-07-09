@@ -7,6 +7,15 @@ const getAvailablePostSlugs = (): string[] => {
   'Operators_c++',
   'Statements_c++',
   'function&variables_c++',
+  'arrary_c++',
+  'linked_list_c++',
+  'class_c++',
+  'pointer_c++',
+  'sorting_c++',
+  'stack&quere_c++',
+  'stl&vector_c++',
+  'string_c++',
+  'struct_c++',
   'PE_zj_a225' 
 ];
 };

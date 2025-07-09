@@ -65,7 +65,7 @@ const Navbar: React.FC = () => {
           {/* Logo */}
           <Link to="/" className="flex items-center space-x-3 flex-shrink-0">
             <img
-              src="images/icon.jpg" // 替換為您的圖標路徑
+              src="/images/icon.jpg" // 替換為您的圖標路徑
               alt="HYJ's Blog Logo"
               className="w-10 h-10 rounded-lg object-contain"
             />
