@@ -1,8 +1,8 @@
 ---
 title: C++ 堆疊與佇列
 date: 2025-07-08
-summary: 本文介紹 C++ 堆疊與佇列的基本概念，包括其特色、宣告、使用方法（push、pop、front、back 等）以及遍歷方式，附程式碼範例，適合初學者學習。
-tags: [C++, Programming, Stack, Queue, Data Structures]
+summary: 本文介紹 C++ 堆疊與佇列的基本概念，包括其特色、宣告、使用方法（push、pop、front、back 等）以及遍歷方式。
+tags: C++, code, 初學, Stack, Queue, 堆疊,ㄖ佇列
 category: information
 ---
 

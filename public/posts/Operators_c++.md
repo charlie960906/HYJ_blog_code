@@ -2,7 +2,7 @@
 title: C++ 運算式與運算子
 date: 2025-07-08
 summary: 本文介紹 C++ 中的運算式與運算子，包括設定、一元、算術、關係、遞增遞減、邏輯、位元邏輯與括號運算子。
-tags: C++, code, 初學者, 運算式與運算子
+tags: C++, code, 初學, 運算式與運算子
 category: information
 ---
 

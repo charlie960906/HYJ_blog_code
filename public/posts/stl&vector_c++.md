@@ -1,8 +1,8 @@
 ---
 title: C++ STL 與 Vector 容器
 date: 2025-07-09
-summary: 本文介紹 C++ 標準模板庫（STL）及其核心組成，並聚焦於 vector 容器的特色、宣告、操作（插入、刪除、遍歷等）與應用，附程式碼範例與練習解答，適合初學者學習。
-tags: [C++, Programming, STL, Vector, Containers]
+summary: 本文介紹 C++ 標準模板庫（STL）及其核心組成，並聚焦於 vector 容器的特色、宣告、操作（插入、刪除、遍歷等）與應用。
+tags: C++, code, 初學, STL, Vector
 category: information
 ---
 

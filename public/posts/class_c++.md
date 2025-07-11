@@ -1,8 +1,8 @@
 ---
 title: C++ 類別（Class）基礎與應用
 date: 2025-07-09
-summary: 本文介紹 C++ 類別的概念，包括宣告、成員存取控制、物件、建構元、靜態成員、友誼函數及物件陣列的應用，附程式碼範例與練習解答，適合初學者學習。
-tags: [C++, Programming, Class, Object-Oriented, Data Structures]
+summary: 本文介紹 C++ 類別的概念，包括宣告、成員存取控制、物件、建構元、靜態成員、友誼函數及物件陣列的應用。
+tags: C++, code, 進階, Class, 類別
 category: information
 ---
 

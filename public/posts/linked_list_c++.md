@@ -1,8 +1,8 @@
 ---
 title: C++ 鏈結串列基礎與應用
 date: 2025-07-09
-summary: 本文介紹 C++ 鏈結串列的概念，包括循序串列與鏈結串列的比較、動態記憶體配置、節點操作（建立、插入、刪除）、以及鏈結堆疊與佇列的實現，附程式碼範例與練習解答，適合初學者學習。
-tags: [C++, Programming, Linked List, Data Structures, Memory Management]
+summary: 本文介紹 C++ 鏈結串列的概念，包括循序串列與鏈結串列的比較、動態記憶體配置、節點操作（建立、插入、刪除）、以及鏈結堆疊與佇列的實現。
+tags: C++, code, 進階, Linked List, 鏈結串列
 category: information
 ---
 

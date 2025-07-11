@@ -1,8 +1,8 @@
 ---
 title: C++ 字串基礎與應用
 date: 2025-07-08
-summary: 本文介紹 C++ 字串的定義、宣告、輸入輸出方式、緩衝區處理、字串長度計算、轉數字以及分割字串的方法，包含程式碼範例與練習題解答，適合初學者學習。
-tags: [C++, Programming, Strings, Input/Output, String Processing]
+summary: 本文介紹 C++ 字串的定義、宣告、輸入輸出方式、緩衝區處理、字串長度計算、轉數字以及分割字串的方法。
+tags: C++, code, 初學, Strings, 字串
 category: information
 ---
 

@@ -1,8 +1,8 @@
 ---
 title: C++ 排序方法介紹
 date: 2025-07-08
-summary: 本文介紹 C++ 中常用的排序方法，包括氣泡排序、選擇排序、插入排序、快速排序和合併排序，涵蓋其定義、特色、原理及程式碼範例，適合初學者學習。
-tags: [C++, Programming, Sorting, Algorithms, Data Structures]
+summary: 本文介紹 C++ 中常用的排序方法，包括氣泡排序、選擇排序、插入排序、快速排序和合併排序。
+tags: C++, code, 初學, Sorting, 排序
 category: information
 ---
 # C++ 排序（Sorting）
