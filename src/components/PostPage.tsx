@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { ArrowLeft, Calendar, Clock, Tag, Share2 } from 'lucide-react';
+import { ArrowLeft, Calendar, Clock, Tag, Share2, X } from 'lucide-react';
 import { Post } from '../types/post';
 import { getPostBySlug } from '../utils/posts';
 import { trackPageView, trackPostRead } from '../utils/analytics';
@@ -11,6 +11,7 @@ const PostPage: React.FC = () => {
   const [post, setPost] = useState<Post | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [lightboxImage, setLightboxImage] = useState<string | null>(null);
 
   useEffect(() => {
     const loadPost = async () => {
@@ -87,6 +88,50 @@ const PostPage: React.FC = () => {
     };
   }, [slug]);
 
+  // 圖片燈箱功能
+  useEffect(() => {
+    const handleImageClick = (e: Event) => {
+      const target = e.target as HTMLElement;
+      if (target.tagName === 'IMG' && target.closest('.prose .image-container')) {
+        e.preventDefault();
+        const img = target as HTMLImageElement;
+        setLightboxImage(img.src);
+      }
+    };
+
+    const handleImageLoad = (e: Event) => {
+      const target = e.target as HTMLImageElement;
+      if (target.hasAttribute('loading') && target.getAttribute('loading') === 'lazy') {
+        target.classList.add('loaded');
+      }
+    };
+
+    // 添加事件監聽器
+    document.addEventListener('click', handleImageClick);
+    document.addEventListener('load', handleImageLoad, true);
+
+    return () => {
+      document.removeEventListener('click', handleImageClick);
+      document.removeEventListener('load', handleImageLoad, true);
+    };
+  }, [post]);
+
+  // 關閉燈箱
+  const closeLightbox = () => {
+    setLightboxImage(null);
+  };
+
+  // ESC 鍵關閉燈箱
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && lightboxImage) {
+        closeLightbox();
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [lightboxImage]);
   const handleShare = async () => {
     if (!post) return;
 
@@ -207,6 +252,24 @@ const PostPage: React.FC = () => {
             dangerouslySetInnerHTML={{ __html: post.content }}
           />
         </article>
+
+        {/* 圖片燈箱 */}
+        {lightboxImage && (
+          <div className="image-lightbox" onClick={closeLightbox}>
+            <button
+              className="image-lightbox-close"
+              onClick={closeLightbox}
+              aria-label="關閉圖片"
+            >
+              <X className="w-6 h-6" />
+            </button>
+            <img
+              src={lightboxImage}
+              alt="放大檢視"
+              onClick={(e) => e.stopPropagation()}
+            />
+          </div>
+        )}
       </div>
     </div>
   );

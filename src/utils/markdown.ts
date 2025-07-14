@@ -1,6 +1,36 @@
 import { marked } from 'marked';
 import { Post } from '../types/post';
 
+// 配置 marked 選項
+marked.setOptions({
+  breaks: true,
+  gfm: true,
+});
+
+// 自定義渲染器
+const renderer = new marked.Renderer();
+
+// 自定義圖片渲染
+renderer.image = function(href, title, text) {
+  const titleAttr = title ? ` title="${title}"` : '';
+  const altAttr = text ? ` alt="${text}"` : '';
+  
+  return `
+    <div class="image-container">
+      <img src="${href}"${altAttr}${titleAttr} loading="lazy" />
+      ${title ? `<p class="image-caption">${title}</p>` : ''}
+    </div>
+  `;
+};
+
+// 自定義連結渲染（支援圖片連結）
+renderer.link = function(href, title, text) {
+  const titleAttr = title ? ` title="${title}"` : '';
+  const target = href.startsWith('http') ? ' target="_blank" rel="noopener noreferrer"' : '';
+  
+  return `<a href="${href}"${titleAttr}${target}>${text}</a>`;
+};
+
 export const parseMarkdown = (markdown: string, slug: string): Post => {
   const lines = markdown.split('\n');
   const frontMatterRegex = /^---\s*$/;
@@ -43,7 +73,7 @@ export const parseMarkdown = (markdown: string, slug: string): Post => {
   }
   
   // Parse markdown content
-  const htmlContent = marked(content);
+  const htmlContent = marked(content, { renderer });
   
   return {
     slug,
