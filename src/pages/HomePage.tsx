@@ -10,7 +10,7 @@ import { trackSearch } from '../utils/analytics';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 const POSTS_PER_PAGE = 6;
-const INITIAL_LOAD_COUNT = 3; // 首次載入文章數量
+const INITIAL_LOAD_COUNT = 6; // 首次載入文章數量
 
 const HomePage: React.FC = () => {
   const [posts, setPosts] = useState<Post[]>([]);
