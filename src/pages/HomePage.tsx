@@ -3,17 +3,21 @@ import { useSearchParams, useParams } from 'react-router-dom';
 import PostCard from '../components/PostCard';
 import Sidebar from '../components/Sidebar';
 import LoadingSpinner from '../components/LoadingSpinner';
+import PostCardSkeleton from '../components/PostCardSkeleton';
 import { Post } from '../types/post';
 import { getAllPosts, getPostsByCategory, filterPosts } from '../utils/posts';
 import { trackSearch } from '../utils/analytics';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 const POSTS_PER_PAGE = 6;
+const INITIAL_LOAD_COUNT = 3; // 首次載入文章數量
 
 const HomePage: React.FC = () => {
   const [posts, setPosts] = useState<Post[]>([]);
   const [filteredPosts, setFilteredPosts] = useState<Post[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [initialLoading, setInitialLoading] = useState(true);
+  const [postsLoading, setPostsLoading] = useState(true);
+  const [loadedPostsCount, setLoadedPostsCount] = useState(0);
   const [searchParams, setSearchParams] = useSearchParams();
   const { category } = useParams();
   const sidebarRef = useRef<HTMLDivElement>(null);
@@ -24,10 +28,22 @@ const HomePage: React.FC = () => {
   const tagFilter = searchParams.get('tag');
   const currentPage = parseInt(searchParams.get('page') || '1', 10);
 
+  // 首頁基本結構先載入
+  useEffect(() => {
+    // 模擬首頁基本結構載入完成
+    const timer = setTimeout(() => {
+      setInitialLoading(false);
+    }, 100);
+    return () => clearTimeout(timer);
+  }, []);
+
+  // 漸進式載入文章
   useEffect(() => {
     const loadPosts = async () => {
       try {
-        setLoading(true);
+        setPostsLoading(true);
+        setLoadedPostsCount(0);
+        
         let allPosts: Post[];
 
         if (category) {
@@ -35,8 +51,20 @@ const HomePage: React.FC = () => {
         } else {
           allPosts = await getAllPosts();
         }
+        
+        // 先載入部分文章
+        const initialPosts = allPosts.slice(0, INITIAL_LOAD_COUNT);
+        setPosts(initialPosts);
+        setLoadedPostsCount(INITIAL_LOAD_COUNT);
 
-        setPosts(allPosts);
+        // 逐步載入剩餘文章
+        const remainingPosts = allPosts.slice(INITIAL_LOAD_COUNT);
+        for (let i = 0; i < remainingPosts.length; i += 2) {
+          await new Promise(resolve => setTimeout(resolve, 200)); // 200ms 間隔
+          const batch = remainingPosts.slice(i, i + 2);
+          setPosts(prev => [...prev, ...batch]);
+          setLoadedPostsCount(prev => prev + batch.length);
+        }
 
         const filtered = filterPosts(allPosts, {
           search: searchQuery,
@@ -51,7 +79,7 @@ const HomePage: React.FC = () => {
       } catch (error) {
         console.error('載入文章失敗:', error);
       } finally {
-        setLoading(false);
+        setPostsLoading(false);
       }
     };
 
@@ -147,9 +175,14 @@ const HomePage: React.FC = () => {
     return range;
   };
 
-  if (loading) {
+  // 如果首頁基本結構還在載入，顯示載入畫面
+  if (initialLoading) {
     return <LoadingSpinner />;
   }
+  
+  // 計算需要顯示的文章和骨架屏
+  const totalExpectedPosts = filteredPosts.length || posts.length;
+  const skeletonCount = Math.max(0, Math.min(POSTS_PER_PAGE - currentPosts.length, totalExpectedPosts - loadedPostsCount));
 
   return (
     <div className="container mx-auto px-4 py-6 sm:py-8" style={{ paddingTop: category ? '5rem' : '1.5rem' }}>
@@ -180,18 +213,26 @@ const HomePage: React.FC = () => {
           )}
           <div className="space-y-6 sm:space-y-8">
             {currentPosts.length === 0 ? (
-              <div className="glassmorphism-card p-6 sm:p-8 text-center">
+              !postsLoading ? (
+                <div className="glassmorphism-card p-6 sm:p-8 text-center">
                 <p className="text-white/80 text-base sm:text-lg">沒有找到相關文章</p>
                 {(searchQuery || category) && (
                   <p className="text-white/60 text-xs sm:text-sm mt-2">
                     嘗試調整搜尋條件或瀏覽所有文章
                   </p>
                 )}
-              </div>
+                </div>
+              ) : null
             ) : (
-              currentPosts.map((post, index) => (
-                <PostCard key={post.slug} post={post} isLazy={index > 2} />
-              ))
+              <>
+                {currentPosts.map((post, index) => (
+                  <PostCard key={post.slug} post={post} isLazy={index > 2} />
+                ))}
+                {/* 顯示載入中的骨架屏 */}
+                {Array.from({ length: skeletonCount }, (_, index) => (
+                  <PostCardSkeleton key={`skeleton-${index}`} />
+                ))}
+              </>
             )}
           </div>
 
@@ -250,7 +291,7 @@ const HomePage: React.FC = () => {
         {/* Sidebar */}
         <div className="order-2 lg:order-none lg:col-span-1 sidebar-container sidebar-mobile">
           <div className="sidebar-content" ref={sidebarRef}>
-            <Sidebar />
+            <Sidebar isLoading={postsLoading} />
           </div>
         </div>
       </div>

@@ -13,6 +13,15 @@ const Hero: React.FC = () => {
   const [displayText, setDisplayText] = useState('');
   const [isDeleting, setIsDeleting] = useState(false);
   const [typeIndex, setTypeIndex] = useState(0);
+  const [isVisible, setIsVisible] = useState(false);
+
+  // 頁面載入後立即顯示 Hero
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsVisible(true);
+    }, 50);
+    return () => clearTimeout(timer);
+  }, []);
 
   useEffect(() => {
     const currentText = subtitles[currentSubtitle];
@@ -41,7 +50,9 @@ const Hero: React.FC = () => {
   }, [typeIndex, isDeleting, currentSubtitle, subtitles]);
 
   return (
-    <section className="hero-section min-h-screen flex items-center justify-center px-4 pt-20">
+    <section className={`hero-section min-h-screen flex items-center justify-center px-4 pt-20 transition-all duration-500 ${
+      isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
+    }`}>
       <div className="text-center max-w-6xl mx-auto">
         <div className="glassmorphism-card p-6 sm:p-8 md:p-12">
           <h1 className="hero-title text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-bold text-white mb-4 sm:mb-6 tracking-tight">

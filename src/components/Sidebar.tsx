@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { User, Tag as TagIcon } from 'lucide-react';
 import { getTagsWithFrequency } from '../utils/tags';
+import SidebarSkeleton from './SidebarSkeleton';
 
 interface TagData {
   name: string;
@@ -10,15 +11,19 @@ interface TagData {
   color: string;
 }
 
-const Sidebar: React.FC = () => {
+interface SidebarProps {
+  isLoading?: boolean;
+}
+
+const Sidebar: React.FC<SidebarProps> = ({ isLoading = false }) => {
   const [tags, setTags] = useState<TagData[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const [tagsLoading, setTagsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const loadTags = async () => {
       try {
-        setIsLoading(true);
+        setTagsLoading(true);
         const tagData = await getTagsWithFrequency();
         const colors = [
           'bg-red-500/20 text-red-100 border-red-400/30',
@@ -56,12 +61,17 @@ const Sidebar: React.FC = () => {
         setError('載入標籤失敗，請稍後再試');
         console.error('Failed to load tags:', err);
       } finally {
-        setIsLoading(false);
+        setTagsLoading(false);
       }
     };
 
     loadTags();
   }, []);
+
+  // 如果整體還在載入，顯示骨架屏
+  if (isLoading) {
+    return <SidebarSkeleton />;
+  }
 
   return (
     <aside className="space-y-6">
@@ -95,7 +105,7 @@ const Sidebar: React.FC = () => {
           <h3 className="text-lg sm:text-xl font-semibold text-white">標籤雲</h3>
         </div>
         <div className="flex flex-wrap gap-1 sm:gap-2">
-          {isLoading ? (
+          {tagsLoading ? (
             <p className="text-gray-400 text-xs sm:text-sm">載入中...</p>
           ) : error ? (
             <p className="text-red-400 text-xs sm:text-sm">{error}</p>

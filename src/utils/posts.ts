@@ -26,7 +26,26 @@ export const getAllPosts = async (): Promise<Post[]> => {
   const slugs = getAvailablePostSlugs();
   const posts: Post[] = [];
   
-  for (const slug of slugs) {
+  // 優先載入策略：先載入較新的文章
+  const prioritySlugs = slugs.slice(0, 3); // 前3篇優先
+  const remainingSlugs = slugs.slice(3);
+  
+  // 先載入優先文章
+  for (const slug of prioritySlugs) {
+    try {
+      const response = await fetch(`/posts/${slug}.md`);
+      if (response.ok) {
+        const markdown = await response.text();
+        const post = parseMarkdown(markdown, slug);
+        posts.push(post);
+      }
+    } catch (error) {
+      console.error(`Failed to load priority post: ${slug}`, error);
+    }
+  }
+  
+  // 再載入其餘文章
+  for (const slug of remainingSlugs) {
     try {
       const response = await fetch(`/posts/${slug}.md`);
       if (response.ok) {

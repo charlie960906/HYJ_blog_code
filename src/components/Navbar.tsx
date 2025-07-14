@@ -6,8 +6,14 @@ const Navbar: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const [isVisible, setIsVisible] = useState(false);
   const navigate = useNavigate();
   const searchInputRef = useRef<HTMLInputElement>(null);
+
+  // 導航列立即顯示
+  useEffect(() => {
+    setIsVisible(true);
+  }, []);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -59,7 +65,9 @@ const Navbar: React.FC = () => {
   ];
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 glassmorphism-nav">
+    <nav className={`fixed top-0 left-0 right-0 z-50 glassmorphism-nav transition-all duration-300 ${
+      isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-full'
+    }`}>
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
