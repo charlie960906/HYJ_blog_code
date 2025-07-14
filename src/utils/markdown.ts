@@ -26,7 +26,7 @@ renderer.image = function(href, title, text) {
 // 自定義連結渲染（支援圖片連結）
 renderer.link = function(href, title, text) {
   const titleAttr = title ? ` title="${title}"` : '';
-  const target = href.startsWith('http') ? ' target="_blank" rel="noopener noreferrer"' : '';
+  const target = (typeof href === 'string' && href.startsWith('http')) ? ' target="_blank" rel="noopener noreferrer"' : '';
   
   return `<a href="${href}"${titleAttr}${target}>${text}</a>`;
 };
