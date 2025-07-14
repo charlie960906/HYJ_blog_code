@@ -3,6 +3,7 @@ import { parseMarkdown } from './markdown';
 
 const getAvailablePostSlugs = (): string[] => {
   return [
+  'F1__movie_Review',
   'Introduction__c++',
   'Operators_c++',
   'Statements_c++',
