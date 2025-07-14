@@ -4,7 +4,7 @@ date: 2025-07-13
 summary: 本文介紹觀賞 F1 Movie 後的劇情、心得感想、拍攝技巧、實際場地、電影中事件與現實
 tags: 
 marp: true
-category: life
+category: reviews
 ---
 
 # F1 Movie 影評
