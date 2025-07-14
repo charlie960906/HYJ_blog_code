@@ -1,5 +1,6 @@
 import React, { Suspense, lazy, useEffect, useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
+import { useWebsiteOptimization } from './hooks/useOptimization';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
 import Footer from './components/Footer';
@@ -27,6 +28,14 @@ const ScrollToTopOnRouteChange: React.FC = () => {
 
 function App() {
   const [scrollY, setScrollY] = useState(0);
+  
+  // 應用網站優化
+  useWebsiteOptimization({
+    title: "HYJ's Blog",
+    description: "HYJ's Blog - 分享程式設計、演算法、財經投資等內容",
+    keywords: ['程式設計', '演算法', '財經', '投資', 'C++', 'JavaScript', 'React'],
+    type: 'website'
+  });
 
   useEffect(() => {
     const handleScroll = () => setScrollY(window.scrollY);
@@ -37,7 +46,7 @@ function App() {
   return (
     <Router>
       <ScrollToTopOnRouteChange />
-      <div className="min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900">
+      <div className="min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900" id="main-content">
         {/* 滾動進度條 */}
         <ScrollProgress />
         
@@ -49,13 +58,14 @@ function App() {
             filter: `blur(${Math.min(scrollY / 10, 20)}px)`,
             opacity: 0.3
           }}
+          aria-hidden="true"
         />
         
         {/* Overlay */}
-        <div className="fixed inset-0 bg-black/20" />
+        <div className="fixed inset-0 bg-black/20" aria-hidden="true" />
         
         {/* Content */}
-        <div className="relative z-10">
+        <main className="relative z-10" role="main">
           <Navbar />
           
           <Suspense fallback={<LoadingSpinner />}>
@@ -75,7 +85,7 @@ function App() {
           </Suspense>
           
           <Footer />
-        </div>
+        </main>
         
         {/* 回到頂部按鈕 */}
         <ScrollToTop />

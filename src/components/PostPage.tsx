@@ -4,6 +4,7 @@ import { ArrowLeft, Calendar, Clock, Tag, Share2, X } from 'lucide-react';
 import { Post } from '../types/post';
 import { getPostBySlug } from '../utils/posts';
 import { trackPageView, trackPostRead } from '../utils/analytics';
+import { useSEOOptimization } from '../hooks/useOptimization';
 import LoadingSpinner from './LoadingSpinner';
 
 const PostPage: React.FC = () => {
@@ -13,6 +14,15 @@ const PostPage: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [lightboxImage, setLightboxImage] = useState<string | null>(null);
 
+  // SEO 優化
+  useSEOOptimization(post ? {
+    title: `${post.title} - HYJ's Blog`,
+    description: post.summary,
+    keywords: post.tags,
+    type: 'article',
+    publishedTime: post.date,
+    author: 'HYJ'
+  } : undefined);
   useEffect(() => {
     const loadPost = async () => {
       if (!slug) {
@@ -36,38 +46,6 @@ const PostPage: React.FC = () => {
         trackPageView(loadedPost.title, window.location.href);
         trackPostRead(slug, loadedPost.title);
 
-        // 更新文檔標題
-        document.title = `${loadedPost.title} - HYJ's Blog`;
-
-        // 添加結構化數據
-        const structuredData = {
-          "@context": "https://schema.org",
-          "@type": "BlogPosting",
-          "headline": loadedPost.title,
-          "datePublished": loadedPost.date,
-          "author": {
-            "@type": "Person",
-            "name": "HYJ"
-          },
-          "publisher": {
-            "@type": "Organization",
-            "name": "HYJ's Blog"
-          },
-          "description": loadedPost.summary,
-          "keywords": loadedPost.tags.join(', ')
-        };
-
-        // 移除舊的結構化數據
-        const existingScript = document.querySelector('script[type="application/ld+json"]');
-        if (existingScript) {
-          document.head.removeChild(existingScript);
-        }
-
-        // 添加新的結構化數據
-        const script = document.createElement('script');
-        script.type = 'application/ld+json';
-        script.textContent = JSON.stringify(structuredData);
-        document.head.appendChild(script);
 
       } catch (err) {
         setError(err instanceof Error ? err.message : '載入文章時發生錯誤');
@@ -78,14 +56,6 @@ const PostPage: React.FC = () => {
 
     loadPost();
 
-    // 清理函數
-    return () => {
-      document.title = "HYJ's Blog";
-      const script = document.querySelector('script[type="application/ld+json"]');
-      if (script) {
-        document.head.removeChild(script);
-      }
-    };
   }, [slug]);
 
   // 圖片燈箱功能
@@ -194,12 +164,13 @@ const PostPage: React.FC = () => {
   if (!post) return null;
 
   return (
-    <div className="min-h-screen pt-20 sm:pt-24 px-4">
+    <article className="min-h-screen pt-20 sm:pt-24 px-4">
       <div className="container mx-auto max-w-4xl">
         {/* 返回按鈕 */}
         <Link
           to="/"
           className="inline-flex items-center text-white/80 hover:text-white transition-colors mb-8 sm:mb-10 text-sm sm:text-base"
+          aria-label="返回首頁"
         >
           <ArrowLeft className="w-4 h-4 mr-2" />
           返回首頁
@@ -212,6 +183,8 @@ const PostPage: React.FC = () => {
               <span
                 key={tag}
                 className="inline-flex items-center px-2 sm:px-3 py-1 rounded-full text-xs font-medium bg-blue-500/20 text-blue-100 border border-blue-400/30"
+                role="button"
+                tabIndex={0}
               >
                 <Tag className="w-2.5 h-2.5 sm:w-3 sm:h-3 mr-1" />
                 {tag}
@@ -227,7 +200,9 @@ const PostPage: React.FC = () => {
             <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-4 space-y-2 sm:space-y-0 text-sm text-white/70">
               <div className="flex items-center">
                 <Calendar className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />
-                <span className="text-xs sm:text-sm">{formatDate(post.date)}</span>
+                <time className="text-xs sm:text-sm" dateTime={post.date}>
+                  {formatDate(post.date)}
+                </time>
               </div>
               <div className="flex items-center">
                 <Clock className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />
@@ -238,6 +213,7 @@ const PostPage: React.FC = () => {
             <button
               onClick={handleShare}
               className="flex items-center px-3 py-2 text-white/80 hover:text-white transition-colors text-sm sm:text-base self-start sm:self-auto"
+              aria-label="分享文章"
             >
               <Share2 className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />
               分享
@@ -246,16 +222,22 @@ const PostPage: React.FC = () => {
         </header>
 
         {/* 文章內容 */}
-        <article className="glassmorphism-card p-6 sm:p-8 mb-6 sm:mb-8">
+        <section className="glassmorphism-card p-6 sm:p-8 mb-6 sm:mb-8">
           <div
             className="prose prose-invert prose-sm sm:prose-lg max-w-none"
             dangerouslySetInnerHTML={{ __html: post.content }}
           />
-        </article>
+        </section>
 
         {/* 圖片燈箱 */}
         {lightboxImage && (
-          <div className="image-lightbox" onClick={closeLightbox}>
+          <div 
+            className="image-lightbox" 
+            onClick={closeLightbox}
+            role="dialog"
+            aria-modal="true"
+            aria-label="圖片放大檢視"
+          >
             <button
               className="image-lightbox-close"
               onClick={closeLightbox}
@@ -271,7 +253,7 @@ const PostPage: React.FC = () => {
           </div>
         )}
       </div>
-    </div>
+    </article>
   );
 };
 

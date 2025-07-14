@@ -1,0 +1,29 @@
+{
+  "name": "HYJ's Blog",
+  "short_name": "HYJ Blog",
+  "description": "HYJ's Blog - 分享程式設計、演算法、財經投資等內容",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#1e1b4b",
+  "theme_color": "#1e1b4b",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/images/icon.jpg",
+      "sizes": "192x192",
+      "type": "image/jpeg",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/images/icon.jpg",
+      "sizes": "512x512",
+      "type": "image/jpeg",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["education", "technology", "finance"],
+  "lang": "zh-TW",
+  "dir": "ltr",
+  "scope": "/",
+  "prefer_related_applications": false
+}
