@@ -10,7 +10,15 @@
 /* CSS 自定義屬性 */
 :root {
   --spacing-unit: 1rem;
-  --vh: 1vh;
+  --vh: 1vh; 
+  --mobile-vh: 100vh; /* 行動裝置視窗高度 */
+}
+
+/* 行動裝置視窗高度修正 */
+@supports (-webkit-touch-callout: none) {
+  .hero-section {
+    min-height: calc(var(--mobile-vh, 1vh) * 100);
+  }
 }
 
 /* Glassmorphism styles */
@@ -21,12 +29,14 @@
   border-radius: 20px;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
   transition: all 0.3s ease;
+  will-change: transform; /* 優化動畫效能 */
 }
 
 .glassmorphism-nav {
   background: rgba(255, 255, 255, 0.05);
   backdrop-filter: blur(20px);
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  will-change: backdrop-filter;
 }
 
 .glassmorphism-input {
@@ -47,6 +57,52 @@
   backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 12px;
+}
+
+/* 效能優化的載入動畫 */
+@keyframes optimizedFadeIn {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 10px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes optimizedSlideInUp {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 20px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes tagCloudPulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.8;
+  }
+  50% {
+    transform: scale(1.02);
+    opacity: 1;
+  }
+}
+
+.animate-optimizedFadeIn {
+  animation: optimizedFadeIn 0.4s ease-out;
+}
+
+.animate-optimizedSlideInUp {
+  animation: optimizedSlideInUp 0.3s ease-out;
+}
+
+.animate-tagCloudPulse {
+  animation: tagCloudPulse 2s ease-in-out infinite;
 }
 
 /* Sidebar container */
@@ -77,6 +133,7 @@
 /* Typing animation */
 .typing-cursor {
   animation: blink 1s infinite;
+  will-change: opacity;
 }
 
 @keyframes blink {
@@ -92,11 +149,30 @@
   border-top: 4px solid #3B82F6;
   border-radius: 50%;
   animation: spin 1s linear infinite;
+  will-change: transform;
 }
 
 @keyframes spin {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
+}
+
+/* 骨架屏優化動畫 */
+@keyframes skeletonPulse {
+  0% {
+    background-color: rgba(255, 255, 255, 0.1);
+  }
+  50% {
+    background-color: rgba(255, 255, 255, 0.2);
+  }
+  100% {
+    background-color: rgba(255, 255, 255, 0.1);
+  }
+}
+
+.skeleton-pulse {
+  animation: skeletonPulse 1.5s ease-in-out infinite;
+  will-change: background-color;
 }
 
 /* Navigation improvements */
@@ -114,6 +190,7 @@
   height: 2px;
   background: linear-gradient(90deg, #3B82F6, #8B5CF6);
   transition: width 0.3s ease;
+  will-change: width;
 }
 
 .nav-item:hover::before {
@@ -126,11 +203,29 @@
   height: 40px;
 }
 
+/* 圖片延遲載入優化 */
+img[loading="lazy"] {
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+img[loading="lazy"].loaded,
+img[loading="eager"] {
+  opacity: 1;
+}
+
+/* 關鍵圖片立即載入 */
+.sidebar-about-image {
+  content-visibility: auto;
+  contain-intrinsic-size: 128px 128px;
+}
+
 /* Prose styles for markdown content */
 .prose {
   color: rgba(255, 255, 255, 0.9);
   line-height: 1.7;
   max-width: none;
+  contain: layout style;
 }
 
 .prose h1,
@@ -182,6 +277,7 @@
   overflow-x: auto;
   border: 1px solid rgba(255, 255, 255, 0.1);
   margin: 1.5rem 0;
+  contain: layout;
 }
 
 .prose pre code {
@@ -250,6 +346,7 @@
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
   border: 1px solid rgba(255, 255, 255, 0.2);
   transition: all 0.3s ease;
+  will-change: transform;
 }
 
 .prose img:hover {
@@ -261,6 +358,7 @@
 .prose .image-container {
   margin: 2rem 0;
   text-align: center;
+  contain: layout;
 }
 
 .prose .image-container img {
@@ -299,6 +397,7 @@
   z-index: 9999;
   cursor: zoom-out;
   backdrop-filter: blur(10px);
+  will-change: opacity;
 }
 
 .image-lightbox img {
@@ -453,9 +552,6 @@ html {
   animation: slideInUp 0.5s ease-out;
 }
 
-.skeleton-pulse {
-  animation: pulse-subtle 1.5s ease-in-out infinite;
-}
 
 /* Button hover effects */
 button:hover,

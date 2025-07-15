@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { User, Tag as TagIcon } from 'lucide-react';
 import { getTagsWithFrequency } from '../utils/tags';
-import SidebarSkeleton from './SidebarSkeleton';
 
 interface TagData {
   name: string;
@@ -18,12 +17,14 @@ interface SidebarProps {
 const Sidebar: React.FC<SidebarProps> = ({ isLoading = false }) => {
   const [tags, setTags] = useState<TagData[]>([]);
   const [tagsLoading, setTagsLoading] = useState(true);
+  const [tagsAnimating, setTagsAnimating] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const loadTags = async () => {
       try {
         setTagsLoading(true);
+        setTagsAnimating(true);
         const tagData = await getTagsWithFrequency();
         const colors = [
           'bg-red-500/20 text-red-100 border-red-400/30',
@@ -57,16 +58,17 @@ const Sidebar: React.FC<SidebarProps> = ({ isLoading = false }) => {
           .sort((a: TagData, b: TagData) => b.count - a.count || a.name.localeCompare(b.name));
 
         setTags(processedTags);
+        
+        // 延遲動畫效果
+        setTimeout(() => {
+          setTagsAnimating(false);
+        }, 300);
       } catch (err) {
         setError('載入標籤失敗，請稍後再試');
         console.error('Failed to load tags:', err);
       } finally {
         setTagsLoading(false);
       }
-    };
-
-    loadTags();
-  }, []);
 
   // 如果整體還在載入，顯示骨架屏
   if (isLoading) {
@@ -104,9 +106,17 @@ const Sidebar: React.FC<SidebarProps> = ({ isLoading = false }) => {
           <TagIcon className="w-4 h-4 sm:w-5 sm:h-5 text-blue-400 mr-2" />
           <h3 className="text-lg sm:text-xl font-semibold text-white">標籤雲</h3>
         </div>
-        <div className="flex flex-wrap gap-1 sm:gap-2">
+        <div className={`flex flex-wrap gap-1 sm:gap-2 transition-all duration-500 ${tagsAnimating ? 'opacity-50 scale-95' : 'opacity-100 scale-100'}`}>
           {tagsLoading ? (
-            <p className="text-gray-400 text-xs sm:text-sm">載入中...</p>
+            <div className="flex flex-wrap gap-1 sm:gap-2">
+              {Array.from({ length: 8 }, (_, index) => (
+                <div
+                  key={index}
+                  className="h-6 bg-white/10 rounded-full animate-pulse"
+                  style={{ width: `${Math.random() * 40 + 40}px` }}
+                ></div>
+              ))}
+            </div>
           ) : error ? (
             <p className="text-red-400 text-xs sm:text-sm">{error}</p>
           ) : tags.length > 0 ? (
@@ -116,7 +126,8 @@ const Sidebar: React.FC<SidebarProps> = ({ isLoading = false }) => {
                 <Link
                   key={tag.name}
                   to={`/?tag=${encodeURIComponent(tag.name)}`}
-                  className={`inline-flex items-center px-2 sm:px-3 py-1 rounded-full text-xs font-medium border transition-all duration-200 hover:scale-105 ${tag.color || 'bg-gray-500/20 text-gray-100 border-gray-400/30'}`}
+                  className={`inline-flex items-center px-2 sm:px-3 py-1 rounded-full text-xs font-medium border transition-all duration-200 hover:scale-105 animate-slideInUp ${tag.color || 'bg-gray-500/20 text-gray-100 border-gray-400/30'}`}
+                  style={{ animationDelay: `${index * 50}ms` }}
                 >
                   {tag.name} ({tag.count})
                 </Link>
