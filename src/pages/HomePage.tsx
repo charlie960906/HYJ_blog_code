@@ -10,16 +10,14 @@ import { trackSearch } from '../utils/analytics';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 const POSTS_PER_PAGE = 6;
-const INITIAL_LOAD_COUNT = 3; // 首次載入文章數量，減少以提升速度
-const BATCH_SIZE = 2; // 每批載入數量
+const INITIAL_LOAD_COUNT = 6; // 首次載入文章數量
 
 const HomePage: React.FC = () => {
   const [posts, setPosts] = useState<Post[]>([]);
   const [filteredPosts, setFilteredPosts] = useState<Post[]>([]);
-  const [initialLoading, setInitialLoading] = useState(false); // 移除初始載入
+  const [initialLoading, setInitialLoading] = useState(true);
   const [postsLoading, setPostsLoading] = useState(true);
   const [loadedPostsCount, setLoadedPostsCount] = useState(0);
-  const [isFrameworkReady, setIsFrameworkReady] = useState(false);
   const [searchParams, setSearchParams] = useSearchParams();
   const { category } = useParams();
   const sidebarRef = useRef<HTMLDivElement>(null);
@@ -30,12 +28,16 @@ const HomePage: React.FC = () => {
   const tagFilter = searchParams.get('tag');
   const currentPage = parseInt(searchParams.get('page') || '1', 10);
 
-  // 立即顯示框架結構
+  // 首頁基本結構先載入
   useEffect(() => {
-    setIsFrameworkReady(true);
+    // 模擬首頁基本結構載入完成
+    const timer = setTimeout(() => {
+      setInitialLoading(false);
+    }, 100);
+    return () => clearTimeout(timer);
   }, []);
 
-  // 優化的漸進式載入文章
+  // 漸進式載入文章
   useEffect(() => {
     const loadPosts = async () => {
       try {
@@ -50,16 +52,16 @@ const HomePage: React.FC = () => {
           allPosts = await getAllPosts();
         }
         
-        // 立即載入首批文章
+        // 先載入部分文章
         const initialPosts = allPosts.slice(0, INITIAL_LOAD_COUNT);
         setPosts(initialPosts);
         setLoadedPostsCount(INITIAL_LOAD_COUNT);
 
-        // 更快速的批次載入剩餘文章
+        // 逐步載入剩餘文章
         const remainingPosts = allPosts.slice(INITIAL_LOAD_COUNT);
-        for (let i = 0; i < remainingPosts.length; i += BATCH_SIZE) {
-          await new Promise(resolve => setTimeout(resolve, 150)); // 減少間隔時間
-          const batch = remainingPosts.slice(i, i + BATCH_SIZE);
+        for (let i = 0; i < remainingPosts.length; i += 2) {
+          await new Promise(resolve => setTimeout(resolve, 200)); // 200ms 間隔
+          const batch = remainingPosts.slice(i, i + 2);
           setPosts(prev => [...prev, ...batch]);
           setLoadedPostsCount(prev => prev + batch.length);
         }
@@ -173,14 +175,14 @@ const HomePage: React.FC = () => {
     return range;
   };
 
-  // 確保框架準備就緒
-  if (!isFrameworkReady) {
+  // 如果首頁基本結構還在載入，顯示載入畫面
+  if (initialLoading) {
     return <LoadingSpinner />;
   }
   
   // 計算需要顯示的文章和骨架屏
   const totalExpectedPosts = filteredPosts.length || posts.length;
-  const skeletonCount = postsLoading ? Math.max(0, Math.min(POSTS_PER_PAGE - currentPosts.length, 3)) : 0;
+  const skeletonCount = Math.max(0, Math.min(POSTS_PER_PAGE - currentPosts.length, totalExpectedPosts - loadedPostsCount));
 
   return (
     <div className="container mx-auto px-4 py-6 sm:py-8" style={{ paddingTop: category ? '5rem' : '1.5rem' }}>
@@ -289,7 +291,7 @@ const HomePage: React.FC = () => {
         {/* Sidebar */}
         <div className="order-2 lg:order-none lg:col-span-1 sidebar-container sidebar-mobile">
           <div className="sidebar-content" ref={sidebarRef}>
-            <Sidebar isLoading={false} />
+            <Sidebar isLoading={postsLoading} />
           </div>
         </div>
       </div>

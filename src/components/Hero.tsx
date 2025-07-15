@@ -13,11 +13,14 @@ const Hero: React.FC = () => {
   const [displayText, setDisplayText] = useState('');
   const [isDeleting, setIsDeleting] = useState(false);
   const [typeIndex, setTypeIndex] = useState(0);
-  const [isVisible, setIsVisible] = useState(true); // 立即顯示
+  const [isVisible, setIsVisible] = useState(false);
 
-  // 立即開始打字動畫
+  // 頁面載入後立即顯示 Hero
   useEffect(() => {
-    setIsVisible(true);
+    const timer = setTimeout(() => {
+      setIsVisible(true);
+    }, 50);
+    return () => clearTimeout(timer);
   }, []);
 
   useEffect(() => {
@@ -41,14 +44,14 @@ const Hero: React.FC = () => {
           setCurrentSubtitle((prev) => (prev + 1) % subtitles.length);
         }
       }
-    }, isDeleting ? 30 : 80); // 加快打字速度
+    }, isDeleting ? 50 : 100);
 
     return () => clearTimeout(typeTimer);
   }, [typeIndex, isDeleting, currentSubtitle, subtitles]);
 
   return (
-    <section className={`hero-section min-h-screen flex items-center justify-center px-4 pt-20 transition-all duration-300 ${
-      isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-2'
+    <section className={`hero-section min-h-screen flex items-center justify-center px-4 pt-20 transition-all duration-500 ${
+      isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
     }`}>
       <div className="text-center max-w-6xl mx-auto">
         <div className="glassmorphism-card p-6 sm:p-8 md:p-12">

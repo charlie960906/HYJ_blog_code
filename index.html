@@ -24,8 +24,7 @@
     
     <!-- Preload critical resources -->
     <link rel="preload" href="/images/icon.jpg" as="image" />
-    <link rel="preload" href="/images/my.jpg" as="image" />
-    <link rel="preload" href="/images/background.jpg" as="image" media="(min-width: 768px)" />
+    <link rel="preload" href="/images/background.jpg" as="image" />
     
     <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-LGD28KXEXL"></script>
@@ -42,156 +41,43 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
     
-    <!-- Critical CSS inlined for immediate rendering -->
+    <!-- Critical CSS inlined for performance -->
     <style>
-      /* Critical above-the-fold styles for immediate rendering */
-      * { margin: 0; padding: 0; box-sizing: border-box; }
-      body { 
-        margin: 0; 
-        font-family: 'Inter', sans-serif; 
-        background: linear-gradient(135deg, #1e1b4b, #3730a3, #4338ca);
-        min-height: 100vh;
-      }
-      
-      /* Immediate navbar styles */
-      .navbar-immediate {
-        position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        z-index: 50;
-        background: rgba(255, 255, 255, 0.05);
-        backdrop-filter: blur(20px);
-        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        height: 64px;
-        display: flex;
-        align-items: center;
-        padding: 0 1rem;
-      }
-      
-      /* Immediate hero styles */
-      .hero-immediate {
-        min-height: 100vh;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        padding: 80px 1rem 0;
-      }
-      
-      .hero-card-immediate {
-        background: rgba(255, 255, 255, 0.1);
-        backdrop-filter: blur(20px);
-        border: 1px solid rgba(255, 255, 255, 0.2);
-        border-radius: 20px;
-        padding: 2rem;
-        text-align: center;
-        max-width: 800px;
-        width: 100%;
-      }
-      
-      .hero-title-immediate {
-        font-size: clamp(2rem, 8vw, 5rem);
-        font-weight: bold;
-        color: white;
-        margin-bottom: 1rem;
-        line-height: 1.1;
-      }
-      
-      .hero-subtitle-immediate {
-        font-size: clamp(1rem, 3vw, 1.5rem);
-        color: rgba(147, 197, 253, 0.9);
-        font-weight: 300;
-      }
-      
-      /* Content area preparation */
-      .content-area {
-        padding-top: 2rem;
-        opacity: 0;
-        transition: opacity 0.3s ease;
-      }
-      
-      .content-area.loaded {
-        opacity: 1;
-      }
-      
-      /* Mobile optimizations */
-      @media (max-width: 768px) {
-        .navbar-immediate { padding: 0 0.75rem; }
-        .hero-immediate { padding: 64px 1rem 0; }
-        .hero-card-immediate { padding: 1.5rem; }
+      /* Critical above-the-fold styles */
+      body { margin: 0; font-family: 'Inter', sans-serif; }
+      .loading-screen { 
+        position: fixed; 
+        top: 0; 
+        left: 0; 
+        width: 100%; 
+        height: 100%; 
+        background: linear-gradient(135deg, #1e1b4b, #3730a3, #4338ca); 
+        display: flex; 
+        align-items: center; 
+        justify-content: center; 
+        z-index: 9999; 
       }
     </style>
   </head>
   <body>
-    <!-- Immediate visible content -->
-    <nav class="navbar-immediate">
-      <div style="display: flex; align-items: center; color: white;">
-        <img src="/images/icon.jpg" alt="Logo" style="width: 40px; height: 40px; border-radius: 8px; margin-right: 12px;" />
-        <span style="font-size: 1.25rem; font-weight: 600;">HYJ's Blog</span>
+    <!-- Loading screen -->
+    <div id="loading-screen" class="loading-screen">
+      <div style="color: white; text-align: center;">
+        <div style="width: 40px; height: 40px; border: 4px solid rgba(255,255,255,0.3); border-top: 4px solid #fff; border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 16px;"></div>
+        <p>載入中...</p>
       </div>
-    </nav>
-    
-    <section class="hero-immediate">
-      <div class="hero-card-immediate">
-        <h1 class="hero-title-immediate">HYJ's Blog</h1>
-        <p class="hero-subtitle-immediate">載入中...</p>
-      </div>
-    </section>
-    
-    <div class="content-area" id="content-area">
-      <div id="root"></div>
     </div>
     
+    <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
     
     <script>
-      // Show content when app is ready
+      // Remove loading screen when app is ready
       window.addEventListener('load', () => {
-        const contentArea = document.getElementById('content-area');
-        const heroImmediate = document.querySelector('.hero-immediate');
-        const navbarImmediate = document.querySelector('.navbar-immediate');
-        
-        if (contentArea) {
-          contentArea.classList.add('loaded');
-        }
-        
-        // Hide immediate elements after React app loads
-        setTimeout(() => {
-          if (heroImmediate) heroImmediate.style.display = 'none';
-          if (navbarImmediate) navbarImmediate.style.display = 'none';
-        }, 500);
-      });
-      
-      // Performance monitoring for mobile
-      if (window.innerWidth <= 768) {
-        const startTime = performance.now();
-        window.addEventListener('load', () => {
-          const loadTime = performance.now() - startTime;
-          if (loadTime > 3000) {
-            console.warn('Mobile load time exceeded 3s:', loadTime + 'ms');
-          }
-        });
-      }
-      
-      // Viewport height fix for mobile
-      function setVH() {
-        const vh = window.innerHeight * 0.01;
-        document.documentElement.style.setProperty('--vh', vh + 'px');
-      }
-      setVH();
-      window.addEventListener('resize', setVH);
-      
-      // Preload critical resources based on device
-      if (window.innerWidth > 768) {
-        const bgImage = new Image();
-        bgImage.src = '/images/background.jpg';
-      }
-      
-      // Critical resource preloading
-      const criticalImages = ['/images/my.jpg'];
-      criticalImages.forEach(src => {
-        const img = new Image();
-        img.src = src;
+        const loadingScreen = document.getElementById('loading-screen');
+        if (loadingScreen) {
+          loadingScreen.style.opacity = '0';
+          setTimeout(() => loadingScreen.remove(), 300);
         }
       });
       
@@ -204,5 +90,12 @@
         });
       }
     </script>
+    
+    <style>
+      @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+      }
+    </style>
   </body>
 </html>
