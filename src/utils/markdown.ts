@@ -5,13 +5,14 @@ import { Post } from '../types/post';
 marked.setOptions({
   breaks: true,
   gfm: true,
+  async: false, // 明確設置同步模式
 });
 
 // 自定義渲染器
 const renderer = new marked.Renderer();
 
 // 自定義圖片渲染
-renderer.image = function(href, title, text) {
+renderer.image = function({ href, title, text }: { href: string; title: string | null; text: string }) {
   const titleAttr = title ? ` title="${title}"` : '';
   const altAttr = text ? ` alt="${text}"` : '';
   
@@ -24,10 +25,20 @@ renderer.image = function(href, title, text) {
 };
 
 // 自定義連結渲染（支援圖片連結）
-renderer.link = function(href, title, text) {
+renderer.link = function(
+  hrefOrObj: string | { href: string; title?: string | null; text: string; tokens?: any },
+  title?: string | null,
+  text?: string
+) {
+  if (typeof hrefOrObj === 'object' && hrefOrObj !== null) {
+    const { href, title, text } = hrefOrObj;
+    const titleAttr = title ? ` title="${title}"` : '';
+    const target = href.startsWith('http') ? ' target="_blank" rel="noopener noreferrer"' : '';
+    return `<a href="${href}"${titleAttr}${target}>${text}</a>`;
+  }
+  const href = hrefOrObj as string;
   const titleAttr = title ? ` title="${title}"` : '';
-  const target = (typeof href === 'string' && href.startsWith('http')) ? ' target="_blank" rel="noopener noreferrer"' : '';
-  
+  const target = href.startsWith('http') ? ' target="_blank" rel="noopener noreferrer"' : '';
   return `<a href="${href}"${titleAttr}${target}>${text}</a>`;
 };
 
@@ -73,7 +84,7 @@ export const parseMarkdown = (markdown: string, slug: string): Post => {
   }
   
   // Parse markdown content
-  const htmlContent = marked(content, { renderer });
+  const htmlContent = marked.parse(content, { renderer }) as string; // 明確指定為 string
   
   return {
     slug,
