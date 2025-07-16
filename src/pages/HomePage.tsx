@@ -1,16 +1,20 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, Suspense, lazy } from 'react';
 import { useSearchParams, useParams } from 'react-router-dom';
-import PostCard from '../components/PostCard';
-import Sidebar from '../components/Sidebar';
 import LoadingSpinner from '../components/LoadingSpinner';
-import PostCardSkeleton from '../components/PostCardSkeleton';
 import { Post } from '../types/post';
 import { getAllPosts, getPostsByCategory, filterPosts } from '../utils/posts';
 import { trackSearch } from '../utils/analytics';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
+import Navbar from '../components/Navbar';
+import Hero from '../components/Hero';
+import Sidebar from '../components/Sidebar';
+import PostCard from '../components/PostCard';
+import PostCardSkeleton from '../components/PostCardSkeleton';
 
 const POSTS_PER_PAGE = 6;
 const INITIAL_LOAD_COUNT = 6; // 首次載入文章數量
+
+// 移除 lazy 載入 Sidebar、PostCard、PostCardSkeleton，直接同步載入
 
 const HomePage: React.FC = () => {
   const [posts, setPosts] = useState<Post[]>([]);
@@ -291,7 +295,9 @@ const HomePage: React.FC = () => {
         {/* Sidebar */}
         <div className="order-2 lg:order-none lg:col-span-1 sidebar-container sidebar-mobile">
           <div className="sidebar-content" ref={sidebarRef}>
-            <Sidebar isLoading={postsLoading} />
+            <Suspense fallback={<LoadingSpinner />}>
+              <Sidebar isLoading={postsLoading} />
+            </Suspense>
           </div>
         </div>
       </div>

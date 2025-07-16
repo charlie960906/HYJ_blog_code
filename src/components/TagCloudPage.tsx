@@ -10,9 +10,26 @@ interface TagData {
   color: string;
 }
 
+// 新增 usePageLoaded hook
+function usePageLoaded() {
+  const [loaded, setLoaded] = useState(false);
+  useEffect(() => {
+    if (document.readyState === 'complete' || document.readyState === 'interactive') {
+      setLoaded(true);
+    } else {
+      const onReady = () => setLoaded(true);
+      window.addEventListener('DOMContentLoaded', onReady);
+      return () => window.removeEventListener('DOMContentLoaded', onReady);
+    }
+  }, []);
+  return loaded;
+}
+
 const TagCloudPage: React.FC = () => {
   const [tags, setTags] = useState<TagData[]>([]);
   const [loading, setLoading] = useState(true);
+  // 新增：判斷頁面是否載入完成
+  const pageLoaded = usePageLoaded();
 
   useEffect(() => {
     const loadTags = async () => {
@@ -43,7 +60,7 @@ const TagCloudPage: React.FC = () => {
     loadTags();
   }, []);
 
-  if (loading) {
+  if (loading || !pageLoaded) {
     return (
       <div className="min-h-screen flex items-center justify-center pt-24">
         <div className="glassmorphism-card p-8 text-center">

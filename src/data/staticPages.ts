@@ -4,7 +4,7 @@ const staticPages = {
     content: `
         <div class="space-y-6">
           <div class="text-center">
-            <img src="images/my.jpg" alt="HYJ's Image" class="w-24 h-24 sm:w-32 sm:h-32 rounded-full mx-auto mb-4 sm:mb-6 object-cover about-image">
+            <img src="/images/my.jpg" alt="HYJ's Image" loading="lazy" class="w-24 h-24 sm:w-32 sm:h-32 rounded-full mx-auto mb-4 sm:mb-6 object-cover about-image">
             <h2 class="text-xl sm:text-2xl font-bold text-white mb-3 sm:mb-4">嗨嗨嗨！ 我是老黃</h2>
           </div>
         </div>

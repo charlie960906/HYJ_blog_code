@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
 import { getStaticPageContent } from '../data/staticPages';
@@ -7,8 +7,34 @@ interface StaticPageProps {
   pageKey: string;
 }
 
+function usePageLoaded() {
+  const [loaded, setLoaded] = useState(false);
+  useEffect(() => {
+    if (document.readyState === 'complete' || document.readyState === 'interactive') {
+      setLoaded(true);
+    } else {
+      const onReady = () => setLoaded(true);
+      window.addEventListener('DOMContentLoaded', onReady);
+      return () => window.removeEventListener('DOMContentLoaded', onReady);
+    }
+  }, []);
+  return loaded;
+}
+
 const StaticPage: React.FC<StaticPageProps> = ({ pageKey }) => {
   const content = getStaticPageContent(pageKey);
+  // 新增：判斷頁面是否載入完成
+  const pageLoaded = usePageLoaded();
+
+  if (!pageLoaded) {
+    return (
+      <div className="min-h-screen flex items-center justify-center pt-20">
+        <div className="glassmorphism-card p-8 text-center">
+          <h1 className="text-2xl font-bold text-white mb-4">載入中...</h1>
+        </div>
+      </div>
+    );
+  }
 
   if (!content) {
     return (

@@ -1,9 +1,19 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
+import { visualizer } from 'rollup-plugin-visualizer';
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [react()],
+  plugins: [
+    react(),
+    // 僅在需要時啟用 visualizer
+    process.env.ANALYZE === 'true' && visualizer({
+      open: true,
+      filename: 'dist/bundle-report.html',
+      gzipSize: true,
+      brotliSize: true
+    })
+  ].filter(Boolean),
   build: {
     // 程式碼分割優化
     rollupOptions: {

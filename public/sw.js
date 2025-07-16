@@ -6,22 +6,34 @@ const DYNAMIC_CACHE = 'dynamic-v1';
 // 需要快取的靜態資源
 const STATIC_ASSETS = [
   '/',
+  '/tags',
+  '/about',
+  '/friends',
   '/images/icon.jpg',
   '/images/my.jpg',
   '/images/background.jpg',
   'https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap'
 ];
 
-// 安裝事件 - 快取靜態資源
+// 動態加入 /assets/ 下的 JS/CSS（build 後會自動快取）
 self.addEventListener('install', (event) => {
   event.waitUntil(
-    caches.open(STATIC_CACHE)
-      .then((cache) => {
-        return cache.addAll(STATIC_ASSETS);
-      })
-      .then(() => {
-        return self.skipWaiting();
-      })
+    (async () => {
+      const cache = await caches.open(STATIC_CACHE);
+      // 預快取靜態資源
+      await cache.addAll(STATIC_ASSETS);
+      // 嘗試快取 /assets/ 下的 JS/CSS
+      try {
+        const assets = [
+          '/assets/index.js',
+          '/assets/index.css'
+        ];
+        for (const asset of assets) {
+          try { await cache.add(asset); } catch {}
+        }
+      } catch {}
+      await self.skipWaiting();
+    })()
   );
 });
 
@@ -55,9 +67,12 @@ self.addEventListener('fetch', (event) => {
   }
 
   // 靜態資源 - Cache First 策略
-  if (STATIC_ASSETS.includes(request.url) || 
-      request.url.includes('/images/') ||
-      request.url.includes('fonts.googleapis.com')) {
+  if (
+    STATIC_ASSETS.includes(url.pathname) ||
+    request.url.includes('/images/') ||
+    request.url.includes('fonts.googleapis.com') ||
+    url.pathname.startsWith('/assets/')
+  ) {
     event.respondWith(
       caches.match(request)
         .then((response) => {
