@@ -69,7 +69,7 @@ self.addEventListener('fetch', (event) => {
   // 靜態資源 - Cache First 策略
   if (
     STATIC_ASSETS.includes(url.pathname) ||
-    request.url.includes('/images/') ||
+      request.url.includes('/images/') ||
     request.url.includes('fonts.googleapis.com') ||
     url.pathname.startsWith('/assets/')
   ) {

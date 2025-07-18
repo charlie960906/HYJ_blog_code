@@ -74,12 +74,12 @@ const Navbar: React.FC = () => {
           <Link to="/" className="flex items-center space-x-3 flex-shrink-0">
             <picture>
               <source srcSet="/images/icon.webp" type="image/webp" />
-              <img
+            <img
                 src="/images/icon.jpg"
-                alt="HYJ's Blog Logo"
+              alt="HYJ's Blog Logo"
                 loading="lazy"
-                className="w-10 h-10 rounded-lg object-contain"
-              />
+              className="w-10 h-10 rounded-lg object-contain"
+            />
             </picture>
             <span className="text-xl font-semibold text-white hidden sm:block">
               HYJ's Blog

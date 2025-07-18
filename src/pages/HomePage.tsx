@@ -296,7 +296,7 @@ const HomePage: React.FC = () => {
         <div className="order-2 lg:order-none lg:col-span-1 sidebar-container sidebar-mobile">
           <div className="sidebar-content" ref={sidebarRef}>
             <Suspense fallback={<LoadingSpinner />}>
-              <Sidebar isLoading={postsLoading} />
+            <Sidebar isLoading={postsLoading} />
             </Suspense>
           </div>
         </div>

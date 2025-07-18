@@ -47,6 +47,97 @@
   backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 12px;
+  overflow: hidden;
+}
+
+/* Content spacing */
+.glassmorphism-mini > div {
+  padding: 1.5rem;
+}
+
+@media (min-width: 640px) {
+  .glassmorphism-mini > div {
+    padding: 2rem;
+  }
+}
+
+/* Section title spacing */
+.glassmorphism-mini h3 {
+  margin-bottom: 1.25rem;
+}
+
+@media (min-width: 640px) {
+  .glassmorphism-mini h3 {
+    margin-bottom: 1.5rem;
+  }
+}
+
+/* Content blocks spacing */
+.glassmorphism-mini .content-block {
+  margin-top: 1.25rem;
+}
+
+@media (min-width: 640px) {
+  .glassmorphism-mini .content-block {
+    margin-top: 1.5rem;
+  }
+}
+
+/* List items spacing */
+.glassmorphism-mini ul {
+  margin-top: 1rem;
+}
+
+.glassmorphism-mini li {
+  margin-top: 0.5rem;
+}
+
+@media (min-width: 640px) {
+  .glassmorphism-mini ul {
+    margin-top: 1.25rem;
+  }
+  
+  .glassmorphism-mini li {
+    margin-top: 0.75rem;
+  }
+}
+
+/* Card groups spacing */
+.space-y-6 > * + * {
+  margin-top: 1.5rem;
+}
+
+@media (min-width: 640px) {
+  .space-y-6 > * + * {
+    margin-top: 2rem;
+  }
+}
+
+/* Remove default margin from first glassmorphism-mini */
+.space-y-6 > .glassmorphism-mini:first-child {
+  margin-top: 0;
+}
+
+.glassmorphism-mini > div {
+  padding: 1rem;
+}
+
+@media (min-width: 640px) {
+  .glassmorphism-mini > div {
+    padding: 1.5rem;
+  }
+}
+
+.prose h3:first-child {
+  margin-top: 0;
+}
+
+.prose p:first-of-type {
+  margin-top: 0;
+}
+
+.prose ul:first-child {
+  margin-top: 0;
 }
 
 /* Sidebar container */
