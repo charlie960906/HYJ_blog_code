@@ -45,8 +45,11 @@ const HomePage: React.FC = () => {
   useEffect(() => {
     const loadPosts = async () => {
       try {
+        // 重置狀態，確保切換分類時顯示加載效果
         setPostsLoading(true);
         setLoadedPostsCount(0);
+        setPosts([]);
+        setFilteredPosts([]);
         
         let allPosts: Post[];
 
@@ -83,7 +86,10 @@ const HomePage: React.FC = () => {
       } catch (error) {
         console.error('載入文章失敗:', error);
       } finally {
-        setPostsLoading(false);
+        // 延遲結束加載狀態，確保有足夠時間顯示加載效果
+        setTimeout(() => {
+          setPostsLoading(false);
+        }, 500);
       }
     };
 
@@ -188,6 +194,33 @@ const HomePage: React.FC = () => {
   const totalExpectedPosts = filteredPosts.length || posts.length;
   const skeletonCount = Math.max(0, Math.min(POSTS_PER_PAGE - currentPosts.length, totalExpectedPosts - loadedPostsCount));
 
+  // 如果是分類頁面且正在加載，顯示分類頁面專用的加載畫面
+  if (category && postsLoading && posts.length === 0) {
+    return (
+      <div className="container mx-auto px-4 py-6 sm:py-8" style={{ paddingTop: '5rem' }}>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 homepage-grid">
+          <div className="order-1 lg:order-none lg:col-span-2 main-content">
+            <div className="glassmorphism-card p-4 sm:p-6 mb-6 sm:mb-8">
+              <h2 className="text-xl sm:text-2xl font-bold text-white mb-2">
+                {getCategoryTitle(category)}
+              </h2>
+              <p className="text-sm sm:text-base text-white/80">載入中...</p>
+            </div>
+            <div className="glassmorphism-card p-8 sm:p-12 flex flex-col items-center justify-center">
+              <div className="spinner mb-4"></div>
+              <p className="text-white/80 text-lg">分類文章載入中...</p>
+            </div>
+          </div>
+          <div className="sidebar-container" ref={sidebarRef}>
+            <div className="sidebar-content">
+              <Sidebar isLoading={postsLoading} />
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="container mx-auto px-4 py-6 sm:py-8" style={{ paddingTop: category ? '5rem' : '1.5rem' }}>
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 homepage-grid">
@@ -198,7 +231,14 @@ const HomePage: React.FC = () => {
               <h2 className="text-xl sm:text-2xl font-bold text-white mb-2">
                 {getCategoryTitle(category)}
               </h2>
-              <p className="text-sm sm:text-base text-white/80">共 {filteredPosts.length} 篇文章</p>
+              {postsLoading ? (
+                <div className="flex items-center">
+                  <div className="spinner-sm mr-2"></div>
+                  <p className="text-sm sm:text-base text-white/80">文章數量載入中...</p>
+                </div>
+              ) : (
+                <p className="text-sm sm:text-base text-white/80">共 {filteredPosts.length} 篇文章</p>
+              )}
             </div>
           )}
           {searchQuery && (
@@ -226,16 +266,31 @@ const HomePage: React.FC = () => {
                   </p>
                 )}
                 </div>
-              ) : null
+              ) : (
+                <div className="glassmorphism-card p-8 sm:p-12 flex flex-col items-center justify-center">
+                  <div className="spinner mb-4"></div>
+                  <p className="text-white/80 text-lg">文章載入中...</p>
+                </div>
+              )
             ) : (
               <>
-                {currentPosts.map((post, index) => (
-                  <PostCard key={post.slug} post={post} isLazy={index > 2} />
-                ))}
-                {/* 顯示載入中的骨架屏 */}
-                {Array.from({ length: skeletonCount }, (_, index) => (
-                  <PostCardSkeleton key={`skeleton-${index}`} />
-                ))}
+                {/* 如果是分類頁面且正在加載，顯示加載狀態 */}
+                {category && postsLoading ? (
+                  <div className="glassmorphism-card p-8 sm:p-12 flex flex-col items-center justify-center">
+                    <div className="spinner mb-4"></div>
+                    <p className="text-white/80 text-lg">分類文章載入中...</p>
+                  </div>
+                ) : (
+                  <>
+                    {currentPosts.map((post, index) => (
+                      <PostCard key={post.slug} post={post} isLazy={index > 2} />
+                    ))}
+                    {/* 如果還有文章正在加載，顯示一個統一的加載圖標 */}
+                    {postsLoading && skeletonCount > 0 && (
+                      <PostCardSkeleton />
+                    )}
+                  </>
+                )}
               </>
             )}
           </div>
@@ -293,14 +348,15 @@ const HomePage: React.FC = () => {
         </div>
 
         {/* Sidebar */}
-        <div className="order-2 lg:order-none lg:col-span-1 sidebar-container sidebar-mobile">
-          <div className="sidebar-content" ref={sidebarRef}>
-            <Suspense fallback={<LoadingSpinner />}>
+        <div className="sidebar-container" ref={sidebarRef}>
+          <div className="sidebar-content">
             <Sidebar isLoading={postsLoading} />
-            </Suspense>
           </div>
         </div>
       </div>
+
+      {/* Footer Reference */}
+      <div ref={footerRef}></div>
     </div>
   );
 };

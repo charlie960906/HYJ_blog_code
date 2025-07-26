@@ -3,6 +3,13 @@ import { Link } from 'react-router-dom';
 import { Calendar, Clock, Tag, ArrowRight } from 'lucide-react';
 import { Post } from '../types/post';
 
+// 添加 Google Analytics 的類型定義
+declare global {
+  interface Window {
+    gtag?: (command: string, action: string, params: object) => void;
+  }
+}
+
 const RelatedPosts = lazy(() => import('./RelatedPosts'));
 
 interface PostCardProps {
@@ -13,8 +20,8 @@ interface PostCardProps {
 const PostCard: React.FC<PostCardProps> = ({ post, isLazy = false }) => {
   const handleReadMore = () => {
     // GA4 event tracking
-    if (typeof gtag !== 'undefined') {
-      gtag('event', 'click', {
+    if (typeof window.gtag !== 'undefined') {
+      window.gtag('event', 'click', {
         event_category: 'engagement',
         event_label: 'read_more',
         value: post.slug
@@ -37,7 +44,7 @@ const PostCard: React.FC<PostCardProps> = ({ post, isLazy = false }) => {
   };
 
   return (
-    <article className="post-card-container glassmorphism-card p-4 sm:p-6 hover:scale-105 transition-all duration-300 group">
+    <article className="post-card-container glassmorphism-card p-4 sm:p-6 hover:scale-105 transition-all duration-300 group animate-fadeIn">
       <div className="space-y-3 sm:space-y-4">
         {/* Tags */}
         <div className="post-card-tags flex flex-wrap gap-1 sm:gap-2">

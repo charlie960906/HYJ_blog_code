@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useParams, useLocation } from 'react-router-dom';
 import { User, Tag as TagIcon } from 'lucide-react';
 import { getTagsWithFrequency } from '../utils/tags';
 import SidebarSkeleton from './SidebarSkeleton';
@@ -36,6 +36,9 @@ const Sidebar: React.FC<SidebarProps> = ({ isLoading = false }) => {
   const [error, setError] = useState<string | null>(null);
   // 新增：判斷頁面是否載入完成
   const pageLoaded = usePageLoaded();
+  // 獲取當前路徑和分類參數，用於檢測頁面變化
+  const location = useLocation();
+  const { category } = useParams();
 
   useEffect(() => {
     const loadTags = async () => {
@@ -83,11 +86,32 @@ const Sidebar: React.FC<SidebarProps> = ({ isLoading = false }) => {
     };
 
     loadTags();
-  }, []);
+  }, [location.pathname, category]); // 添加依賴項，當路徑或分類變化時重新加載標籤
 
   // 如果整體還在載入，顯示骨架屏
-  if (isLoading || !pageLoaded) {
+  if (isLoading || !pageLoaded || tagsLoading) {
     return <SidebarSkeleton />;
+  }
+
+  // 如果加載標籤時出錯
+  if (error) {
+    return (
+      <aside className="space-y-6">
+        <div className="glassmorphism-card p-6">
+          <div className="flex items-center mb-4">
+            <TagIcon className="w-5 h-5 text-red-400 mr-2" />
+            <h3 className="text-xl font-semibold text-white">標籤載入失敗</h3>
+          </div>
+          <p className="text-white/80 text-sm">{error}</p>
+          <button 
+            onClick={() => window.location.reload()} 
+            className="mt-4 text-blue-400 hover:text-blue-300 text-sm flex items-center"
+          >
+            重新整理頁面
+          </button>
+        </div>
+      </aside>
+    );
   }
 
   return (

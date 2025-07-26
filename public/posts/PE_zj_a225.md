@@ -2,7 +2,7 @@
 title: 題解ZJ - a225.明明愛排列
 date: 2024-02-21
 summary: a225.明明愛排列的完整程式碼
-tags: c++, ZJ題解
+tags: C++, ZJ題解
 category: information
 ---
 

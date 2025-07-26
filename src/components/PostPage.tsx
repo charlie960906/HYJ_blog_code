@@ -143,23 +143,36 @@ const PostPage: React.FC = () => {
     return Math.ceil(words / wordsPerMinute);
   };
 
-  if (loading) return <LoadingSpinner />;
-  
-  if (error) return (
-    <div className="min-h-screen flex items-center justify-center pt-20 px-4">
-      <div className="glassmorphism-card p-6 sm:p-8 text-center max-w-md mx-auto">
-        <h1 className="text-xl sm:text-2xl font-bold text-white mb-4">文章未找到</h1>
-        <p className="text-white/80 mb-6 text-sm sm:text-base">{error}</p>
-        <Link
-          to="/"
-          className="inline-flex items-center px-4 py-2 bg-blue-500 text-white rounded-full hover:bg-blue-600 transition-colors text-sm sm:text-base"
-        >
-          <ArrowLeft className="w-4 h-4 mr-2" />
-          返回首頁
-        </Link>
+  // 如果正在加載，顯示加載圖標
+  if (loading) {
+    return (
+      <div className="min-h-screen pt-20">
+        <div className="container mx-auto px-4">
+          <div className="glassmorphism-card p-6 sm:p-8 flex flex-col items-center justify-center">
+            <div className="spinner mb-4"></div>
+            <p className="text-white/80 text-lg">文章載入中...</p>
+          </div>
+        </div>
       </div>
-    </div>
-  );
+    );
+  }
+
+  // 如果有錯誤，顯示錯誤信息
+  if (error) {
+    return (
+      <div className="min-h-screen pt-20">
+        <div className="container mx-auto px-4">
+          <div className="glassmorphism-card p-6 sm:p-8 text-center">
+            <p className="text-red-400 text-lg mb-4">😢 {error}</p>
+            <Link to="/" className="inline-flex items-center text-blue-400 hover:text-blue-300">
+              <ArrowLeft size={16} className="mr-1" />
+              返回首頁
+            </Link>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   if (!post) return null;
 
