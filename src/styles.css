@@ -144,6 +144,7 @@
 .sidebar-container {
   position: relative;
   height: 100%;
+  z-index: 10;
 }
 
 /* Sidebar content */
@@ -153,9 +154,43 @@
   width: 100%;
 }
 
+/* 手機版 Sidebar 樣式調整 */
+@media (max-width: 1023px) {
+  .sidebar-container {
+    margin-top: 2rem;
+  }
+  
+  .sidebar-content {
+    position: static;
+    top: auto;
+  }
+}
+
 /* Main content area */
 .main-content {
   min-height: calc(100vh - 4rem);
+  position: relative;
+  z-index: 10;
+}
+
+/* Homepage grid layout */
+.homepage-grid {
+  display: grid;
+}
+
+@media (max-width: 1023px) {
+  .homepage-grid {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .homepage-grid > .main-content {
+    order: 1;
+  }
+  
+  .homepage-grid > .sidebar-container {
+    order: 2;
+  }
 }
 
 /* Footer */
@@ -1227,4 +1262,109 @@ a:focus:not(:focus-visible) {
   .pagination-container {
     display: none;
   }
+}
+
+/* 手機版效能優化 */
+.is-mobile {
+  /* 簡化陰影 */
+  --shadow-strength: 0.5;
+  /* 減少動畫時間 */
+  --animation-duration: 0.2s;
+  /* 減少模糊效果 */
+  --blur-strength: 10px;
+}
+
+/* 非手機版 */
+:root:not(.is-mobile) {
+  --shadow-strength: 1;
+  --animation-duration: 0.3s;
+  --blur-strength: 20px;
+}
+
+/* 針對低效能裝置的優化 */
+.reduce-motion * {
+  transition-duration: 0.01ms !important;
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+}
+
+/* 優化 glassmorphism 效果 */
+.glassmorphism-card {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(var(--blur-strength));
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 20px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, calc(0.3 * var(--shadow-strength)));
+  transition: all var(--animation-duration) ease;
+}
+
+.glassmorphism-nav {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(var(--blur-strength));
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* 手機版圖片優化 */
+.is-mobile img {
+  transform: translateZ(0); /* 啟用 GPU 加速 */
+}
+
+/* 針對低效能裝置的動畫優化 */
+@media (prefers-reduced-motion: reduce) {
+  .animate-fadeIn {
+    animation: none !important;
+    opacity: 1 !important;
+  }
+  
+  .animate-slideInUp {
+    animation: none !important;
+    opacity: 1 !important;
+  }
+  
+  .hover-scale:hover {
+    transform: none !important;
+  }
+  
+  .post-card-container:hover {
+    transform: none !important;
+  }
+}
+
+/* 手機版動畫優化 */
+.is-mobile .animate-fadeIn {
+  animation-duration: 0.3s;
+}
+
+.is-mobile .animate-slideInUp {
+  animation-duration: 0.3s;
+}
+
+/* 手機版載入優化 */
+.is-mobile .post-card-container {
+  transition: opacity 0.3s ease;
+}
+
+/* 手機版圖片懶載入優化 */
+.is-mobile img[loading="lazy"] {
+  transition: opacity 0.3s ease;
+}
+
+/* 手機版背景優化 */
+.is-mobile .fixed {
+  will-change: transform;
+}
+
+/* 手機版滾動優化 */
+.is-mobile {
+  scroll-behavior: auto;
+}
+
+/* 手機版字體優化 */
+.is-mobile {
+  text-rendering: optimizeSpeed;
+}
+
+/* 手機版文字顯示優化 */
+.is-mobile .prose {
+  text-size-adjust: 100%;
 }

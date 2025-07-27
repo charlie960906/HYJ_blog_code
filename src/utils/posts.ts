@@ -17,8 +17,7 @@ const getAvailablePostSlugs = (): string[] => {
   'stl_vector_c++',
   'string_c++',
   'struct_c++',
-  'PE_zj_a225',
-  'example_with_images'
+  'PE_zj_a225'
 ];
 };
 

@@ -30,15 +30,26 @@ export class PerformanceMonitor {
           if (entry.isIntersecting) {
             const img = entry.target as HTMLImageElement;
             if (img.dataset.src) {
-              img.src = img.dataset.src;
+              // 使用低質量圖片先載入
+              if (img.dataset.placeholder) {
+                img.src = img.dataset.placeholder;
+              }
+              
+              // 創建新圖片物件預載入高質量圖片
+              const highResImage = new Image();
+              highResImage.onload = () => {
+                img.src = img.dataset.src!;
+                img.classList.add('loaded');
+              };
+              highResImage.src = img.dataset.src;
+              
               img.removeAttribute('data-src');
-              img.classList.add('loaded');
             }
           }
         });
       },
       {
-        rootMargin: '50px 0px',
+        rootMargin: '100px 0px', // 增加預載入距離
         threshold: 0.01
       }
     );
@@ -46,13 +57,28 @@ export class PerformanceMonitor {
 
   // 預載入關鍵資源
   preloadCriticalResources(): void {
-    const criticalImages = ['/images/icon.jpg', '/images/my.jpg'];
+    const criticalImages = ['/images/icon.webp', '/images/my.webp'];
+    const criticalFonts = ['https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap'];
     
+    // 預載入關鍵圖片
     criticalImages.forEach(src => {
       const link = document.createElement('link');
       link.rel = 'preload';
       link.as = 'image';
       link.href = src;
+      document.head.appendChild(link);
+    });
+    
+    // 預載入關鍵字體
+    criticalFonts.forEach(src => {
+      const link = document.createElement('link');
+      link.rel = 'preload';
+      link.as = 'style';
+      link.href = src;
+      link.onload = function() {
+        this.onload = null;
+        this.rel = 'stylesheet';
+      };
       document.head.appendChild(link);
     });
   }
@@ -70,6 +96,36 @@ export class PerformanceMonitor {
       }
     }
   }
+  
+  // 延遲載入非關鍵資源
+  deferNonCriticalResources(): void {
+    // 延遲載入非關鍵 CSS
+    document.querySelectorAll('link[data-defer]').forEach((link) => {
+      const htmlLink = link as HTMLLinkElement;
+      htmlLink.setAttribute('media', 'print');
+      setTimeout(() => {
+        htmlLink.onload = () => {
+          htmlLink.media = 'all';
+        };
+        htmlLink.href = htmlLink.href;
+      }, 1000);
+    });
+    
+    // 延遲載入非關鍵 JS
+    document.querySelectorAll('script[data-defer]').forEach((script) => {
+      const htmlScript = script as HTMLScriptElement;
+      setTimeout(() => {
+        const newScript = document.createElement('script');
+        Array.from(htmlScript.attributes).forEach(attr => {
+          if (attr.name !== 'data-defer') {
+            newScript.setAttribute(attr.name, attr.value);
+          }
+        });
+        newScript.appendChild(document.createTextNode(htmlScript.innerHTML));
+        htmlScript.parentNode?.replaceChild(newScript, htmlScript);
+      }, 2000);
+    });
+  }
 }
 
 // 圖片優化工具
@@ -77,10 +133,30 @@ export const ImageOptimizer = {
   // 創建響應式圖片
   createResponsiveImage(src: string, alt: string, sizes?: string): string {
     const webpSrc = src.replace(/\.(jpg|jpeg|png)$/i, '.webp');
+    const smallSrc = webpSrc.replace(/\.webp$/i, '-small.webp');
+    
     return `
       <picture>
-        <source srcset="${webpSrc}" type="image/webp">
-        <img src="${src}" alt="${alt}" loading="lazy" decoding="async" ${sizes ? `sizes="${sizes}"` : ''}>
+        <source 
+          srcset="${webpSrc}" 
+          type="image/webp" 
+          media="(min-width: 768px)"
+        >
+        <source 
+          srcset="${smallSrc}" 
+          type="image/webp" 
+          media="(max-width: 767px)"
+        >
+        <img 
+          src="${smallSrc}" 
+          data-src="${src}" 
+          alt="${alt}" 
+          loading="lazy" 
+          decoding="async" 
+          ${sizes ? `sizes="${sizes}"` : ''}
+          class="transition-opacity opacity-0"
+          onload="this.classList.remove('opacity-0')"
+        >
       </picture>
     `;
   },
@@ -98,6 +174,34 @@ export const ImageOptimizer = {
     }
     
     return suggestions;
+  },
+  
+  // 生成低質量預覽圖
+  generateLowQualityPlaceholder(imgSrc: string): Promise<string> {
+    return new Promise((resolve) => {
+      const img = new Image();
+      img.crossOrigin = 'anonymous';
+      img.onload = () => {
+        // 創建 canvas 並縮小圖片
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        
+        // 縮小到 20px 寬度
+        const aspectRatio = img.height / img.width;
+        canvas.width = 20;
+        canvas.height = Math.floor(20 * aspectRatio);
+        
+        if (ctx) {
+          ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+          // 返回低質量 base64 圖片
+          resolve(canvas.toDataURL('image/jpeg', 0.1));
+        } else {
+          resolve('');
+        }
+      };
+      img.onerror = () => resolve('');
+      img.src = imgSrc;
+    });
   }
 };
 
@@ -129,5 +233,16 @@ export const CacheManager = {
         }
       }
     });
+  },
+  
+  // 預熱快取
+  prewarmCache(urls: string[]): void {
+    if ('caches' in window) {
+      caches.open('prewarm-cache').then(cache => {
+        cache.addAll(urls).catch(err => {
+          console.error('預熱快取失敗:', err);
+        });
+      });
+    }
   }
 };

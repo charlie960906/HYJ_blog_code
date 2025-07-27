@@ -1,4 +1,4 @@
-import React, { Suspense, lazy } from 'react';
+import React, { Suspense, lazy, useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Calendar, Clock, Tag, ArrowRight } from 'lucide-react';
 import { Post } from '../types/post';
@@ -10,6 +10,7 @@ declare global {
   }
 }
 
+// 懶加載 RelatedPosts 組件
 const RelatedPosts = lazy(() => import('./RelatedPosts'));
 
 interface PostCardProps {
@@ -18,6 +19,36 @@ interface PostCardProps {
 }
 
 const PostCard: React.FC<PostCardProps> = ({ post, isLazy = false }) => {
+  const [isVisible, setIsVisible] = useState(false);
+  const [isIntersecting, setIsIntersecting] = useState(false);
+
+  // 使用 IntersectionObserver 檢測元素是否在可視區域內
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting) {
+          setIsIntersecting(true);
+          // 當元素進入視窗後，稍微延遲顯示以避免一次性渲染過多內容
+          setTimeout(() => setIsVisible(true), isLazy ? 200 : 0);
+          observer.disconnect();
+        }
+      },
+      { 
+        rootMargin: '100px 0px', 
+        threshold: 0.1 
+      }
+    );
+
+    const currentElement = document.getElementById(`post-card-${post.slug}`);
+    if (currentElement) {
+      observer.observe(currentElement);
+    }
+
+    return () => {
+      observer.disconnect();
+    };
+  }, [post.slug, isLazy]);
+
   const handleReadMore = () => {
     // GA4 event tracking
     if (typeof window.gtag !== 'undefined') {
@@ -39,12 +70,61 @@ const PostCard: React.FC<PostCardProps> = ({ post, isLazy = false }) => {
 
   const estimateReadTime = (content: string) => {
     const wordsPerMinute = 200;
-    const words = content.split(' ').length;
+    const words = content.split(/\s+/).length;
     return Math.ceil(words / wordsPerMinute);
   };
 
+  // 渲染骨架屏
+  if (!isIntersecting) {
+    return (
+      <div 
+        id={`post-card-${post.slug}`}
+        className="post-card-container glassmorphism-card p-4 sm:p-6 animate-pulse"
+      >
+        <div className="space-y-3 sm:space-y-4">
+          {/* 標籤骨架屏 */}
+          <div className="flex flex-wrap gap-1 sm:gap-2">
+            {[...Array(3)].map((_, i) => (
+              <div 
+                key={i} 
+                className="h-6 w-16 bg-white/10 rounded-full"
+              />
+            ))}
+          </div>
+          
+          {/* 標題骨架屏 */}
+          <div className="h-7 sm:h-8 bg-white/10 rounded-md w-3/4" />
+          
+          {/* 元信息骨架屏 */}
+          <div className="flex gap-4">
+            <div className="h-5 bg-white/10 rounded w-24" />
+            <div className="h-5 bg-white/10 rounded w-20" />
+          </div>
+          
+          {/* 摘要骨架屏 */}
+          <div className="space-y-2">
+            <div className="h-4 bg-white/10 rounded w-full" />
+            <div className="h-4 bg-white/10 rounded w-5/6" />
+            <div className="h-4 bg-white/10 rounded w-4/6" />
+          </div>
+          
+          {/* 按鈕骨架屏 */}
+          <div className="pt-3 sm:pt-4">
+            <div className="h-9 bg-white/10 rounded-full w-28" />
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // 渲染實際內容
   return (
-    <article className="post-card-container glassmorphism-card p-4 sm:p-6 hover:scale-105 transition-all duration-300 group animate-fadeIn">
+    <article 
+      id={`post-card-${post.slug}`}
+      className={`post-card-container glassmorphism-card p-4 sm:p-6 hover:scale-105 transition-all duration-300 group ${
+        isVisible ? 'animate-fadeIn' : 'opacity-0'
+      }`}
+    >
       <div className="space-y-3 sm:space-y-4">
         {/* Tags */}
         <div className="post-card-tags flex flex-wrap gap-1 sm:gap-2">
@@ -100,8 +180,8 @@ const PostCard: React.FC<PostCardProps> = ({ post, isLazy = false }) => {
           </Link>
         </div>
 
-        {/* Related Posts */}
-        {isLazy && (
+        {/* Related Posts - 只有當元素可見時才加載 */}
+        {isLazy && isVisible && (
           <Suspense fallback={<div className="animate-pulse bg-white/10 h-20 sm:h-24 rounded-lg"></div>}>
             <RelatedPosts currentPost={post} />
           </Suspense>
@@ -111,4 +191,4 @@ const PostCard: React.FC<PostCardProps> = ({ post, isLazy = false }) => {
   );
 };
 
-export default PostCard;
+export default React.memo(PostCard);

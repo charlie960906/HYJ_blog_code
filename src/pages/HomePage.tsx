@@ -225,7 +225,7 @@ const HomePage: React.FC = () => {
     <div className="container mx-auto px-4 py-6 sm:py-8" style={{ paddingTop: category ? '5rem' : '1.5rem' }}>
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 homepage-grid">
         {/* Main content */}
-        <div className="order-1 lg:order-none lg:col-span-2 main-content scroll-mt-24" ref={mainContentRef}>
+        <div className="lg:col-span-2 main-content scroll-mt-24" ref={mainContentRef}>
           {category && (
             <div className="glassmorphism-card p-4 sm:p-6 mb-6 sm:mb-8">
               <h2 className="text-xl sm:text-2xl font-bold text-white mb-2">
@@ -348,7 +348,7 @@ const HomePage: React.FC = () => {
         </div>
 
         {/* Sidebar */}
-        <div className="sidebar-container" ref={sidebarRef}>
+        <div className="sidebar-container order-2 lg:order-none" ref={sidebarRef}>
           <div className="sidebar-content">
             <Sidebar isLoading={postsLoading} />
           </div>

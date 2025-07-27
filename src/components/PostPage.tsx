@@ -190,7 +190,7 @@ const PostPage: React.FC = () => {
         </Link>
 
         {/* 文章標題區 */}
-        <header className="glassmorphism-card p-6 sm:p-8 mb-6 sm:mb-8">
+        <header className="glassmorphism-card p-6 sm:p-8 mb-6 sm:mb-8 z-10 relative">
           <div className="flex flex-wrap gap-1 sm:gap-2 mb-4">
             {post.tags.map((tag) => (
               <span
@@ -235,7 +235,7 @@ const PostPage: React.FC = () => {
         </header>
 
         {/* 文章內容 */}
-        <section className="glassmorphism-card p-6 sm:p-8 mb-6 sm:mb-8">
+        <section className="glassmorphism-card p-6 sm:p-8 mb-6 sm:mb-8 z-10 relative">
           <div
             className="prose prose-invert prose-sm sm:prose-lg max-w-none"
             dangerouslySetInnerHTML={{ __html: post.content }}

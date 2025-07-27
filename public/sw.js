@@ -1,7 +1,9 @@
 // Service Worker for caching and performance optimization
-const CACHE_NAME = 'hyj-blog-v1';
-const STATIC_CACHE = 'static-v1';
-const DYNAMIC_CACHE = 'dynamic-v1';
+const CACHE_NAME = 'hyj-blog-v2';
+const STATIC_CACHE = 'static-v2';
+const DYNAMIC_CACHE = 'dynamic-v2';
+const IMAGE_CACHE = 'images-v2';
+const FONT_CACHE = 'fonts-v1';
 
 // 需要快取的靜態資源
 const STATIC_ASSETS = [
@@ -9,19 +11,39 @@ const STATIC_ASSETS = [
   '/tags',
   '/about',
   '/friends',
-  '/images/icon.jpg',
-  '/images/my.jpg',
-  '/images/background.jpg',
-  'https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap'
+  '/images/icon.webp',
+  '/images/my.webp',
+  '/images/background.webp',
+  '/images/icon-small.webp',
+  '/images/my-small.webp',
+  '/images/background-small.webp'
+];
+
+// 字體檔案
+const FONT_FILES = [
+  'https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap',
+  'https://fonts.gstatic.com/s/inter/v12/UcCO3FwrK3iLTeHuS_fvQtMwCp50KnMw2boKoduKmMEVuLyfAZ9hiJ-Ek-_EeA.woff2',
+  'https://fonts.gstatic.com/s/inter/v12/UcCO3FwrK3iLTeHuS_fvQtMwCp50KnMw2boKoduKmMEVuGKYAZ9hiJ-Ek-_EeA.woff2'
 ];
 
 // 動態加入 /assets/ 下的 JS/CSS（build 後會自動快取）
 self.addEventListener('install', (event) => {
   event.waitUntil(
     (async () => {
-      const cache = await caches.open(STATIC_CACHE);
-      // 預快取靜態資源
-      await cache.addAll(STATIC_ASSETS);
+      // 快取靜態資源
+      const staticCache = await caches.open(STATIC_CACHE);
+      await staticCache.addAll(STATIC_ASSETS);
+      
+      // 快取字體
+      const fontCache = await caches.open(FONT_CACHE);
+      await Promise.all(FONT_FILES.map(async (font) => {
+        try {
+          await fontCache.add(font);
+        } catch (e) {
+          console.error(`Failed to cache font: ${font}`, e);
+        }
+      }));
+      
       // 嘗試快取 /assets/ 下的 JS/CSS
       try {
         const assets = [
@@ -29,9 +51,10 @@ self.addEventListener('install', (event) => {
           '/assets/index.css'
         ];
         for (const asset of assets) {
-          try { await cache.add(asset); } catch {}
+          try { await staticCache.add(asset); } catch {}
         }
       } catch {}
+      
       await self.skipWaiting();
     })()
   );
@@ -44,7 +67,13 @@ self.addEventListener('activate', (event) => {
       .then((cacheNames) => {
         return Promise.all(
           cacheNames.map((cacheName) => {
-            if (cacheName !== STATIC_CACHE && cacheName !== DYNAMIC_CACHE) {
+            // 清理舊版本的快取
+            if (
+              cacheName !== STATIC_CACHE && 
+              cacheName !== DYNAMIC_CACHE &&
+              cacheName !== IMAGE_CACHE &&
+              cacheName !== FONT_CACHE
+            ) {
               return caches.delete(cacheName);
             }
           })
@@ -56,6 +85,12 @@ self.addEventListener('activate', (event) => {
   );
 });
 
+// 檢測是否為行動裝置
+const isMobile = (request) => {
+  const userAgent = request.headers.get('User-Agent') || '';
+  return /Mobile|Android|iPhone|iPad|iPod/i.test(userAgent);
+};
+
 // 攔截請求 - 實施快取策略
 self.addEventListener('fetch', (event) => {
   const { request } = event;
@@ -66,11 +101,98 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
+  // 字體檔案 - Cache First 策略，長期快取
+  if (request.url.includes('fonts.googleapis.com') || request.url.includes('fonts.gstatic.com')) {
+    event.respondWith(
+      caches.match(request)
+        .then((response) => {
+          return response || fetch(request)
+            .then((fetchResponse) => {
+              return caches.open(FONT_CACHE)
+                .then((cache) => {
+                  cache.put(request, fetchResponse.clone());
+                  return fetchResponse;
+                });
+            })
+            .catch(() => {
+              // 如果網絡請求失敗，返回一個基本的字體回退
+              if (request.url.includes('.woff2')) {
+                return new Response('', {
+                  status: 200,
+                  headers: new Headers({
+                    'Content-Type': 'font/woff2'
+                  })
+                });
+              }
+              return fetch(request);
+            });
+        })
+    );
+    return;
+  }
+
+  // 圖片檔案 - Cache First + 根據裝置選擇不同大小的圖片
+  if (request.url.includes('/images/') || request.url.endsWith('.jpg') || request.url.endsWith('.webp') || request.url.endsWith('.png')) {
+    event.respondWith(
+      caches.match(request)
+        .then((response) => {
+          if (response) {
+            return response;
+          }
+          
+          return fetch(request)
+            .then((fetchResponse) => {
+              // 檢查是否為行動裝置，如果是且請求的不是小圖，嘗試改用小圖
+              const isMobileDevice = isMobile(request);
+              const isSmallImage = request.url.includes('-small.');
+              
+              if (isMobileDevice && !isSmallImage) {
+                // 嘗試獲取小圖版本
+                const smallImageUrl = request.url.replace(/\.(jpg|jpeg|png|webp)$/i, '-small.$1');
+                return fetch(smallImageUrl)
+                  .then((smallResponse) => {
+                    if (smallResponse.ok) {
+                      // 快取小圖版本
+                      const responseToCache = smallResponse.clone();
+                      caches.open(IMAGE_CACHE).then((cache) => {
+                        cache.put(request, responseToCache);
+                      });
+                      return smallResponse;
+                    }
+                    // 如果小圖不存在，使用原始圖片
+                    return fetchResponse;
+                  })
+                  .catch(() => fetchResponse);
+              }
+              
+              // 快取圖片
+              const responseToCache = fetchResponse.clone();
+              caches.open(IMAGE_CACHE).then((cache) => {
+                cache.put(request, responseToCache);
+              });
+              
+              return fetchResponse;
+            })
+            .catch(() => {
+              // 如果網絡請求失敗，返回一個佔位圖片
+              return new Response(
+                '<svg width="400" height="300" xmlns="http://www.w3.org/2000/svg"><rect width="400" height="300" fill="#eee"/><text x="50%" y="50%" font-size="18" text-anchor="middle" fill="#999">Image not available</text></svg>',
+                {
+                  status: 200,
+                  headers: new Headers({
+                    'Content-Type': 'image/svg+xml'
+                  })
+                }
+              );
+            });
+        })
+    );
+    return;
+  }
+
   // 靜態資源 - Cache First 策略
   if (
     STATIC_ASSETS.includes(url.pathname) ||
-      request.url.includes('/images/') ||
-    request.url.includes('fonts.googleapis.com') ||
     url.pathname.startsWith('/assets/')
   ) {
     event.respondWith(
@@ -103,6 +225,18 @@ self.addEventListener('fetch', (event) => {
                   });
               }
               return fetchResponse;
+            })
+            .catch(() => {
+              // 如果網絡請求失敗且沒有快取，返回一個基本的回退
+              if (!response) {
+                return new Response('文章暫時無法載入，請檢查網絡連接。', {
+                  status: 200,
+                  headers: new Headers({
+                    'Content-Type': 'text/markdown'
+                  })
+                });
+              }
+              return response;
             });
 
           return response || fetchPromise;
@@ -125,7 +259,25 @@ self.addEventListener('fetch', (event) => {
         return response;
       })
       .catch(() => {
-        return caches.match(request);
+        return caches.match(request)
+          .then(cachedResponse => {
+            if (cachedResponse) {
+              return cachedResponse;
+            }
+            
+            // 如果是 HTML 頁面請求，返回離線頁面
+            if (request.headers.get('Accept').includes('text/html')) {
+              return caches.match('/');
+            }
+            
+            return new Response('資源暫時無法載入', {
+              status: 503,
+              statusText: 'Service Unavailable',
+              headers: new Headers({
+                'Content-Type': 'text/plain'
+              })
+            });
+          });
       })
   );
 });
@@ -146,8 +298,8 @@ self.addEventListener('push', (event) => {
     const data = event.data.json();
     const options = {
       body: data.body,
-      icon: '/images/icon.jpg',
-      badge: '/images/icon.jpg',
+      icon: '/images/icon.webp',
+      badge: '/images/icon-small.webp',
       vibrate: [100, 50, 100],
       data: {
         dateOfArrival: Date.now(),
@@ -168,4 +320,31 @@ self.addEventListener('notificationclick', (event) => {
   event.waitUntil(
     clients.openWindow('/')
   );
+});
+
+// 定期清理過期快取
+self.addEventListener('periodicsync', (event) => {
+  if (event.tag === 'cache-cleanup') {
+    event.waitUntil(
+      (async () => {
+        // 清理一週前的動態快取
+        const cache = await caches.open(DYNAMIC_CACHE);
+        const requests = await cache.keys();
+        const oneWeekAgo = Date.now() - 7 * 24 * 60 * 60 * 1000;
+        
+        for (const request of requests) {
+          const response = await cache.match(request);
+          if (response) {
+            const dateHeader = response.headers.get('date');
+            if (dateHeader) {
+              const date = new Date(dateHeader).getTime();
+              if (date < oneWeekAgo) {
+                await cache.delete(request);
+              }
+            }
+          }
+        }
+      })()
+    );
+  }
 });

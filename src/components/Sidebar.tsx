@@ -115,7 +115,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isLoading = false }) => {
   }
 
   return (
-    <aside className="space-y-6">
+    <aside className="space-y-6 mt-0 lg:mt-0">
       {/* About Me */}
       <div className="glassmorphism-card p-6">
         <div className="flex items-center mb-4">
