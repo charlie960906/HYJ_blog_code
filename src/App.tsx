@@ -7,6 +7,7 @@ import Footer from './components/Footer';
 import LoadingSpinner from './components/LoadingSpinner';
 import ScrollProgress from './components/ScrollProgress';
 import ScrollToTop from './components/ScrollToTop';
+import { setupGlobalErrorHandling } from './utils/errorReporting';
 import './styles.css';
 
 // Lazy load components
@@ -14,6 +15,7 @@ const HomePage = lazy(() => import('./pages/HomePage'));
 const PostPage = lazy(() => import('./components/PostPage'));
 const TagCloudPage = lazy(() => import('./components/TagCloudPage'));
 const StaticPage = lazy(() => import('./components/StaticPage'));
+const NotFoundPage = lazy(() => import('./components/NotFoundPage'));
 
 // 滾動到頂部組件
 const ScrollToTopOnRouteChange: React.FC = () => {
@@ -41,6 +43,11 @@ function App() {
     const handleScroll = () => setScrollY(window.scrollY);
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  // 初始化全局錯誤處理
+  useEffect(() => {
+    setupGlobalErrorHandling();
   }, []);
 
   return (
@@ -81,6 +88,7 @@ function App() {
               <Route path="/about" element={<StaticPage pageKey="about" />} />
               <Route path="/friends" element={<StaticPage pageKey="friends" />} />
               <Route path="/category/:category" element={<HomePage />} />
+              <Route path="*" element={<NotFoundPage />} />
             </Routes>
           </Suspense>
           
