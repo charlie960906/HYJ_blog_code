@@ -13,6 +13,22 @@
   --vh: 1vh;
 }
 
+
+
+/* 響應式背景圖樣式 */
+.background-image {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  transition: all 0.3s ease;
+  z-index: -1;
+}
+
 /* Glassmorphism styles */
 .glassmorphism-card {
   background: rgba(255, 255, 255, 0.1);
@@ -1177,14 +1193,7 @@ a:focus:not(:focus-visible) {
   transition-duration: 0.01ms !important;
 }
 
-/* WebP 支援 */
-.webp .hero-section {
-  background-image: url('images/background.webp');
-}
 
-.no-webp .hero-section {
-  background-image: url('images/background.jpg');
-}
 
 /* 高對比模式 */
 @media (prefers-contrast: high) {
@@ -1371,4 +1380,518 @@ a:focus:not(:focus-visible) {
 /* 手機版文字顯示優化 */
 .is-mobile .prose {
   text-size-adjust: 100%;
+}
+
+/* 手機版和平板版優化 - 新增和改進的響應式設計 */
+
+/* 觸控優化 - 確保觸控目標足夠大 */
+@media (hover: none) and (pointer: coarse) {
+  /* 最小觸控目標 44px */
+  button,
+  .nav-item,
+  .post-card-container,
+  .pagination-button,
+  .tag-cloud-item {
+    min-height: 44px;
+    min-width: 44px;
+  }
+  
+  /* 改進觸控反饋 */
+  .post-card-container:active,
+  .pagination-button:active,
+  .tag-cloud-item:active {
+    transform: scale(0.98);
+    transition: transform 0.1s ease;
+  }
+  
+  /* 移除hover效果，改用active */
+  .nav-item:hover::before,
+  button:hover,
+  .post-card-container:hover {
+    transform: none;
+  }
+  
+  /* 改進按鈕觸控體驗 */
+  button,
+  .pagination-button {
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+  }
+  
+  /* 改進卡片觸控體驗 */
+  .post-card-container {
+    touch-action: manipulation;
+    cursor: pointer;
+  }
+  
+  /* 標籤觸控優化 */
+  .post-card-tag {
+    min-height: 32px;
+    min-width: 32px;
+    touch-action: manipulation;
+  }
+}
+
+/* 手機版優化 (480px 以下) */
+@media (max-width: 480px) {
+  /* 容器優化 */
+  .container {
+    padding-left: 1rem;
+    padding-right: 1rem;
+    max-width: 100%;
+  }
+  
+  /* 導航列優化 */
+  .glassmorphism-nav {
+    backdrop-filter: blur(15px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+  }
+  
+  .glassmorphism-nav .container {
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+  }
+  
+  /* Logo 優化 */
+  .glassmorphism-nav img {
+    width: 2.5rem;
+    height: 2.5rem;
+  }
+  
+  /* 選單按鈕優化 */
+  .glassmorphism-nav button {
+    padding: 0.75rem;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+  }
+  
+  /* 手機版選單優化 */
+  .glassmorphism-nav .glassmorphism-card {
+    margin: 0.5rem 0;
+    border-radius: 12px;
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+  }
+  
+  /* 搜尋框優化 */
+  .glassmorphism-nav input {
+    font-size: 16px; /* 防止iOS縮放 */
+    padding: 0.75rem 1rem;
+    border-radius: 12px;
+  }
+  
+  /* 卡片優化 */
+  .glassmorphism-card {
+    border-radius: 16px;
+    padding: 1.25rem;
+    margin-bottom: 1.25rem;
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+  }
+  
+  /* Hero 區域優化 */
+  .hero-title {
+    font-size: 2.25rem !important;
+    line-height: 1.2;
+    font-weight: 700;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  }
+  
+  .hero-subtitle {
+    font-size: 1rem !important;
+    padding: 0 1rem;
+    line-height: 1.5;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+  }
+  
+  /* 文章卡片優化 */
+  .post-card-container {
+    border-radius: 20px;
+    padding: 1.75rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  .post-card-title {
+    font-size: 1.625rem !important;
+    line-height: 1.3;
+    margin-bottom: 1rem;
+  }
+  
+  .post-card-meta {
+    flex-direction: row;
+    align-items: center;
+    gap: 1.5rem;
+    margin-top: 1.25rem;
+  }
+  
+  /* 標籤優化 */
+  .post-card-tags {
+    gap: 0.75rem;
+    margin-bottom: 1.25rem;
+  }
+  
+  .post-card-tag {
+    font-size: 0.875rem;
+    padding: 0.5rem 1rem;
+    border-radius: 25px;
+  }
+  
+  /* 內容優化 */
+  .prose {
+    font-size: 1rem;
+    line-height: 1.7;
+  }
+  
+  .prose h1 { font-size: 2.25rem; margin-top: 2.5rem; margin-bottom: 1.25rem; }
+  .prose h2 { font-size: 1.875rem; margin-top: 2rem; margin-bottom: 1rem; }
+  .prose h3 { font-size: 1.5rem; margin-top: 1.75rem; margin-bottom: 0.75rem; }
+  
+  .prose pre {
+    padding: 1.25rem;
+    font-size: 0.85rem;
+    border-radius: 16px;
+  }
+  
+  .prose table {
+    font-size: 0.9rem;
+    border-radius: 16px;
+  }
+  
+  .prose th,
+  .prose td {
+    padding: 1rem 0.75rem;
+  }
+  
+  /* 圖片優化 */
+  .prose img {
+    border-radius: 16px;
+    margin: 2rem 0;
+  }
+  
+  .prose .image-container {
+    margin: 2rem -1.5rem;
+    border-radius: 16px;
+  }
+  
+  /* 分頁優化 */
+  .pagination-container {
+    gap: 0.75rem;
+    margin-top: 2.5rem;
+  }
+  
+  .pagination-button {
+    padding: 0.875rem 1.25rem;
+    font-size: 0.9rem;
+    min-width: 52px;
+    min-height: 52px;
+    border-radius: 16px;
+  }
+  
+  /* 標籤雲優化 */
+  .tag-cloud-container {
+    padding: 2rem;
+    min-height: 28rem;
+    border-radius: 20px;
+  }
+  
+  .tag-cloud-item {
+    font-size: 0.95rem !important;
+    padding: 0.625rem 1.25rem;
+    margin: 0.375rem;
+    border-radius: 25px;
+  }
+  
+  /* 靜態頁面優化 */
+  .static-page-container {
+    padding-top: 7rem;
+  }
+  
+  .static-page-content {
+    padding: 1.75rem;
+  }
+  
+  /* 關於頁面圖片 */
+  .about-image {
+    width: 8rem;
+    height: 8rem;
+    border-radius: 50%;
+    border: 4px solid rgba(255, 255, 255, 0.2);
+  }
+  
+  /* 友情連結卡片 */
+  .friend-card {
+    flex-direction: row;
+    text-align: left;
+    gap: 1.5rem;
+    padding: 2rem;
+    border-radius: 20px;
+  }
+  
+  /* 側邊欄平板版 */
+  .sidebar-about-image {
+    width: 7rem;
+    height: 7rem;
+    border-radius: 50%;
+    border: 3px solid rgba(255, 255, 255, 0.2);
+  }
+  
+  /* 頁尾優化 */
+  .footer {
+    padding: 2.5rem 1.5rem;
+    border-radius: 24px 24px 0 0;
+  }
+  
+  .footer-stats {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+    margin: 2rem 0;
+  }
+  
+  .footer-uptime {
+    gap: 1rem;
+    margin: 1.5rem 0;
+  }
+}
+
+/* 大平板版優化 (769px - 1024px) */
+@media (min-width: 769px) and (max-width: 1024px) {
+  /* 導航列優化 */
+  .navbar-desktop {
+    display: none;
+  }
+  
+  /* 側邊欄優化 */
+  .sidebar-content {
+    position: static;
+    top: auto;
+    border-radius: 20px;
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+  }
+  
+  /* 網格優化 */
+  .homepage-grid {
+    grid-template-columns: 1fr;
+    gap: 2.5rem;
+  }
+  
+  .sidebar-container {
+    order: 2;
+  }
+  
+  .main-content {
+    order: 1;
+  }
+  
+  /* Hero 區域優化 */
+  .hero-title {
+    font-size: 4.5rem !important;
+    line-height: 1.1;
+  }
+  
+  .hero-subtitle {
+    font-size: 1.375rem !important;
+    line-height: 1.5;
+  }
+  
+  /* 文章卡片優化 */
+  .post-card-container {
+    border-radius: 24px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+  }
+  
+  .post-card-title {
+    font-size: 1.875rem !important;
+    line-height: 1.3;
+    margin-bottom: 1.25rem;
+  }
+  
+  /* 內容優化 */
+  .prose {
+    font-size: 1.05rem;
+    line-height: 1.7;
+  }
+  
+  .prose h1 { font-size: 2.5rem; margin-top: 3rem; margin-bottom: 1.5rem; }
+  .prose h2 { font-size: 2rem; margin-top: 2.5rem; margin-bottom: 1.25rem; }
+  .prose h3 { font-size: 1.625rem; margin-top: 2rem; margin-bottom: 1rem; }
+  
+  /* 分頁優化 */
+  .pagination-container {
+    gap: 1rem;
+    margin-top: 3rem;
+  }
+  
+  .pagination-button {
+    padding: 1rem 1.5rem;
+    font-size: 0.95rem;
+    min-width: 56px;
+    min-height: 56px;
+    border-radius: 18px;
+  }
+  
+  /* 標籤雲優化 */
+  .tag-cloud-container {
+    padding: 2.5rem;
+    min-height: 32rem;
+    border-radius: 24px;
+  }
+  
+  .tag-cloud-item {
+    font-size: 1rem !important;
+    padding: 0.75rem 1.5rem;
+    margin: 0.5rem;
+    border-radius: 30px;
+  }
+  
+  /* 靜態頁面優化 */
+  .static-page-container {
+    padding-top: 8rem;
+  }
+  
+  .static-page-content {
+    padding: 2rem;
+  }
+  
+  /* 關於頁面圖片 */
+  .about-image {
+    width: 10rem;
+    height: 10rem;
+    border-radius: 50%;
+    border: 5px solid rgba(255, 255, 255, 0.2);
+  }
+  
+  /* 側邊欄優化 */
+  .sidebar-about-image {
+    width: 8rem;
+    height: 8rem;
+    border-radius: 50%;
+    border: 4px solid rgba(255, 255, 255, 0.2);
+  }
+  
+  /* 頁尾優化 */
+  .footer {
+    padding: 3rem 2rem;
+    border-radius: 28px 28px 0 0;
+  }
+  
+  .footer-stats {
+    gap: 2rem;
+    margin: 2.5rem 0;
+  }
+  
+  .footer-uptime {
+    gap: 1.25rem;
+    margin: 2rem 0;
+  }
+}
+
+/* 橫向手機版優化 */
+@media (max-height: 500px) and (orientation: landscape) {
+  .hero-section {
+    min-height: 60vh;
+    padding: 2rem 0;
+  }
+  
+  .hero-title {
+    font-size: 2rem !important;
+    margin-bottom: 0.5rem;
+  }
+  
+  .hero-subtitle {
+    font-size: 0.9rem !important;
+    margin-bottom: 1rem;
+  }
+  
+  .navbar-height {
+    height: 3.5rem;
+  }
+  
+  .static-page-container {
+    padding-top: 4rem;
+  }
+  
+  .glassmorphism-card {
+    padding: 1rem;
+    margin-bottom: 0.75rem;
+  }
+  
+  .post-card-container {
+    padding: 1rem;
+    margin-bottom: 0.75rem;
+  }
+}
+
+/* 高解析度螢幕優化 */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  .glassmorphism-card,
+  .glassmorphism-nav,
+  .glassmorphism-input,
+  .glassmorphism-mini {
+    border-width: 0.5px;
+  }
+  
+  .prose img {
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: crisp-edges;
+  }
+}
+
+/* 效能優化 - 減少動畫 */
+@media (prefers-reduced-motion: reduce) {
+  .animate-fadeIn {
+    animation: none;
+    opacity: 1;
+  }
+  
+  .animate-slideInUp {
+    animation: none;
+    transform: none;
+  }
+  
+  .hover-scale:hover {
+    transform: none;
+  }
+  
+  .post-card-container:hover {
+    transform: none;
+  }
+}
+
+/* 手機版動畫優化 */
+.is-mobile .animate-fadeIn {
+  animation-duration: 0.3s;
+}
+
+.is-mobile .animate-slideInUp {
+  animation-duration: 0.4s;
+}
+
+.is-mobile .post-card-container {
+  will-change: transform;
+}
+
+.is-mobile img[loading="lazy"] {
+  will-change: opacity;
+}
+
+.is-mobile .fixed {
+  will-change: transform;
+}
+
+/* 手機版觸控優化 */
+.is-mobile {
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+}
+
+.is-mobile {
+  touch-action: manipulation;
+}
+
+.is-mobile .prose {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }

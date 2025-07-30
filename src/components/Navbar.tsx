@@ -7,12 +7,24 @@ const Navbar: React.FC = () => {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [isVisible, setIsVisible] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
   const navigate = useNavigate();
   const searchInputRef = useRef<HTMLInputElement>(null);
+  const menuRef = useRef<HTMLDivElement>(null);
 
   // 導航列立即顯示
   useEffect(() => {
     setIsVisible(true);
+  }, []);
+
+  // 滾動檢測
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 10);
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
   const handleSearch = (e: React.FormEvent) => {
@@ -27,6 +39,16 @@ const Navbar: React.FC = () => {
 
   const toggleSearch = () => {
     setIsSearchOpen(!isSearchOpen);
+    if (!isSearchOpen) {
+      setIsMenuOpen(false);
+    }
+  };
+
+  const toggleMenu = () => {
+    setIsMenuOpen(!isMenuOpen);
+    if (!isMenuOpen) {
+      setIsSearchOpen(false);
+    }
   };
 
   // 當搜尋框打開時自動聚焦
@@ -38,13 +60,19 @@ const Navbar: React.FC = () => {
     }
   }, [isSearchOpen]);
 
-  // 點擊外部關閉搜尋框
+  // 點擊外部關閉選單和搜尋框
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
+      // 關閉搜尋框
       if (isSearchOpen && searchInputRef.current && !searchInputRef.current.closest('.search-container')?.contains(event.target as Node)) {
         if (!searchQuery.trim()) {
           setIsSearchOpen(false);
         }
+      }
+      
+      // 關閉選單
+      if (isMenuOpen && menuRef.current && !menuRef.current.contains(event.target as Node)) {
+        setIsMenuOpen(false);
       }
     };
 
@@ -52,7 +80,23 @@ const Navbar: React.FC = () => {
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, [isSearchOpen, searchQuery]);
+  }, [isSearchOpen, isMenuOpen, searchQuery]);
+
+  // ESC鍵關閉選單和搜尋框
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        setIsMenuOpen(false);
+        setIsSearchOpen(false);
+        setSearchQuery('');
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+    };
+  }, []);
 
   const navItems = [
     { name: '首頁', path: '/' },
@@ -67,19 +111,26 @@ const Navbar: React.FC = () => {
   return (
     <nav className={`fixed top-0 left-0 right-0 z-50 glassmorphism-nav transition-all duration-300 ${
       isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-full'
-    }`}>
+    } ${isScrolled ? 'shadow-lg backdrop-blur-xl' : 'backdrop-blur-lg'}`}>
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
-          <Link to="/" className="flex items-center space-x-3 flex-shrink-0">
+          <Link 
+            to="/" 
+            className="flex items-center space-x-3 flex-shrink-0 transition-transform duration-200 hover:scale-105"
+            onClick={() => {
+              setIsMenuOpen(false);
+              setIsSearchOpen(false);
+            }}
+          >
             <picture>
               <source srcSet="/images/icon.webp" type="image/webp" />
-            <img
+              <img
                 src="/images/icon.jpg"
-              alt="HYJ's Blog Logo"
+                alt="HYJ's Blog Logo"
                 loading="lazy"
-              className="w-10 h-10 rounded-lg object-contain"
-            />
+                className="w-10 h-10 rounded-lg object-contain shadow-sm"
+              />
             </picture>
             <span className="text-xl font-semibold text-white hidden sm:block">
               HYJ's Blog
@@ -92,19 +143,19 @@ const Navbar: React.FC = () => {
               <Link
                 key={item.name}
                 to={item.path}
-                className="nav-item text-white/80 hover:text-white transition-colors duration-200 text-sm font-medium px-2 py-1"
+                className="nav-item text-white/80 hover:text-white transition-all duration-200 text-sm font-medium px-3 py-2 rounded-lg hover:bg-white/10"
               >
                 {item.name}
               </Link>
             ))}
           </div>
 
-          {/* 右側功能區 - 固定寬度容器 */}
-          <div className="flex items-center justify-end" style={{ width: '200px' }}>
+          {/* 右側功能區 */}
+          <div className="flex items-center justify-end space-x-2">
             {/* 桌面版搜尋 */}
             <div className="hidden md:block search-container relative">
               <div className="flex items-center justify-end">
-                {/* 搜尋框 - 使用絕對定位從右側展開 */}
+                {/* 搜尋框 */}
                 <div 
                   className={`absolute right-12 top-1/2 transform -translate-y-1/2 transition-all duration-300 ease-in-out ${
                     isSearchOpen 
@@ -123,7 +174,7 @@ const Navbar: React.FC = () => {
                       placeholder="搜尋文章..."
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
-                      className="w-48 px-4 py-2 pr-4 glassmorphism-input text-white placeholder-white/60 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-400"
+                      className="w-48 px-4 py-2 pr-4 glassmorphism-input text-white placeholder-white/60 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-400 focus:bg-white/15"
                       onKeyDown={(e) => {
                         if (e.key === 'Escape') {
                           setIsSearchOpen(false);
@@ -134,11 +185,11 @@ const Navbar: React.FC = () => {
                   </form>
                 </div>
 
-                {/* 搜尋按鈕 - 固定位置 */}
+                {/* 搜尋按鈕 */}
                 <button
                   onClick={toggleSearch}
-                  className={`p-2 text-white/80 hover:text-white transition-all duration-200 hover:scale-105 relative z-20 ${
-                    isSearchOpen ? 'text-blue-400' : ''
+                  className={`p-2 text-white/80 hover:text-white transition-all duration-200 hover:scale-105 hover:bg-white/10 rounded-lg relative z-20 ${
+                    isSearchOpen ? 'text-blue-400 bg-white/10' : ''
                   }`}
                   aria-label="搜尋"
                 >
@@ -147,20 +198,22 @@ const Navbar: React.FC = () => {
               </div>
             </div>
 
-            {/* 選單按鈕 */}
+            {/* 手機版和中等螢幕選單按鈕 */}
             <button
-              onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="md:hidden lg:hidden text-white p-2 ml-2"
+              onClick={toggleMenu}
+              className="md:hidden lg:hidden text-white p-2 hover:bg-white/10 rounded-lg transition-all duration-200 hover:scale-105"
               aria-label="選單"
+              aria-expanded={isMenuOpen}
             >
               {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
             </button>
 
             {/* 中等螢幕選單按鈕 */}
             <button
-              onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="hidden md:block lg:hidden text-white p-2 ml-2"
+              onClick={toggleMenu}
+              className="hidden md:block lg:hidden text-white p-2 hover:bg-white/10 rounded-lg transition-all duration-200 hover:scale-105"
               aria-label="選單"
+              aria-expanded={isMenuOpen}
             >
               {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
             </button>
@@ -169,17 +222,23 @@ const Navbar: React.FC = () => {
 
         {/* 手機版和中等螢幕選單 */}
         {isMenuOpen && (
-          <div className="lg:hidden glassmorphism-card mt-2 p-4 space-y-4 animate-fadeIn">
-            {navItems.map((item) => (
-              <Link
-                key={item.name}
-                to={item.path}
-                onClick={() => setIsMenuOpen(false)}
-                className="block text-white/80 hover:text-white transition-colors duration-200 py-2"
-              >
-                {item.name}
-              </Link>
-            ))}
+          <div 
+            ref={menuRef}
+            className="lg:hidden glassmorphism-card mt-2 p-4 space-y-4 animate-fadeIn border border-white/10"
+          >
+            {/* 導航項目 */}
+            <div className="grid grid-cols-1 gap-2">
+              {navItems.map((item) => (
+                <Link
+                  key={item.name}
+                  to={item.path}
+                  onClick={() => setIsMenuOpen(false)}
+                  className="block text-white/80 hover:text-white transition-all duration-200 py-3 px-4 rounded-lg hover:bg-white/10 font-medium"
+                >
+                  {item.name}
+                </Link>
+              ))}
+            </div>
             
             {/* 手機版搜尋 */}
             <div className="pt-4 border-t border-white/20">
@@ -190,9 +249,15 @@ const Navbar: React.FC = () => {
                     placeholder="搜尋文章..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    className="w-full px-4 py-2 pl-10 glassmorphism-input text-white placeholder-white/60 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-400"
+                    className="w-full px-4 py-3 pl-12 glassmorphism-input text-white placeholder-white/60 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-400 focus:bg-white/15"
+                    onKeyDown={(e) => {
+                      if (e.key === 'Escape') {
+                        setIsMenuOpen(false);
+                        setSearchQuery('');
+                      }
+                    }}
                   />
-                  <Search className="absolute left-3 top-2.5 h-5 w-5 text-white/60" />
+                  <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-white/60" />
                 </div>
               </form>
             </div>

@@ -57,13 +57,14 @@ function App() {
         {/* 滾動進度條 */}
         <ScrollProgress />
         
-        {/* Background Image with Blur Effect */}
+        {/* Background Image with Blur Effect - 改進版本 */}
         <div 
-          className="fixed inset-0 bg-cover bg-center bg-no-repeat transition-all duration-300"
+          className="background-image"
           style={{
-            backgroundImage: `url('images/background.jpg')`,
+            backgroundImage: `url('/images/background.jpg')`,
             filter: `blur(${Math.min(scrollY / 10, 20)}px)`,
-            opacity: 0.3
+            opacity: 0.3,
+            willChange: 'filter'
           }}
           aria-hidden="true"
         />
