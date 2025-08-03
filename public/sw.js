@@ -219,9 +219,10 @@ self.addEventListener('fetch', (event) => {
           const fetchPromise = fetch(request)
             .then((fetchResponse) => {
               if (fetchResponse.ok) {
+                const responseToCache = fetchResponse.clone();
                 caches.open(DYNAMIC_CACHE)
                   .then((cache) => {
-                    cache.put(request, fetchResponse.clone());
+                    cache.put(request, responseToCache);
                   });
               }
               return fetchResponse;
