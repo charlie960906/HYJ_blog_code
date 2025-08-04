@@ -1,9 +1,9 @@
 // Service Worker for caching and performance optimization
-const CACHE_NAME = 'hyj-blog-v2';
-const STATIC_CACHE = 'static-v2';
-const DYNAMIC_CACHE = 'dynamic-v2';
-const IMAGE_CACHE = 'images-v2';
-const FONT_CACHE = 'fonts-v1';
+const CACHE_NAME = 'hyj-blog-v2025-08-04-23-43';
+const STATIC_CACHE = 'static-v2025-08-04-23-43';
+const DYNAMIC_CACHE = 'dynamic-v2025-08-04-23-43';
+const IMAGE_CACHE = 'images-v2025-08-04-23-43';
+const FONT_CACHE = 'fonts-v2025-08-04-23-43';
 
 // 需要快取的靜態資源
 const STATIC_ASSETS = [
@@ -131,46 +131,21 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // 圖片檔案 - Cache First + 根據裝置選擇不同大小的圖片
-  if (request.url.includes('/images/') || request.url.endsWith('.jpg') || request.url.endsWith('.webp') || request.url.endsWith('.png')) {
+  // 圖片檔案 - Cache First
+  if (request.url.includes('/images/') || request.url.endsWith('.jpg') || request.url.endsWith('.jpeg') || request.url.endsWith('.png')) {
     event.respondWith(
       caches.match(request)
         .then((response) => {
           if (response) {
             return response;
           }
-          
           return fetch(request)
             .then((fetchResponse) => {
-              // 檢查是否為行動裝置，如果是且請求的不是小圖，嘗試改用小圖
-              const isMobileDevice = isMobile(request);
-              const isSmallImage = request.url.includes('-small.');
-              
-              if (isMobileDevice && !isSmallImage) {
-                // 嘗試獲取小圖版本
-                const smallImageUrl = request.url.replace(/\.(jpg|jpeg|png|webp)$/i, '-small.$1');
-                return fetch(smallImageUrl)
-                  .then((smallResponse) => {
-                    if (smallResponse.ok) {
-                      // 快取小圖版本
-                      const responseToCache = smallResponse.clone();
-                      caches.open(IMAGE_CACHE).then((cache) => {
-                        cache.put(request, responseToCache);
-                      });
-                      return smallResponse;
-                    }
-                    // 如果小圖不存在，使用原始圖片
-                    return fetchResponse;
-                  })
-                  .catch(() => fetchResponse);
-              }
-              
               // 快取圖片
               const responseToCache = fetchResponse.clone();
               caches.open(IMAGE_CACHE).then((cache) => {
                 cache.put(request, responseToCache);
               });
-              
               return fetchResponse;
             })
             .catch(() => {

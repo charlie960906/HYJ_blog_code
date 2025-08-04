@@ -57,7 +57,7 @@ export class PerformanceMonitor {
 
   // 預載入關鍵資源
   preloadCriticalResources(): void {
-    const criticalImages = ['/images/icon.webp', '/images/my.webp'];
+    const criticalImages = ['/images/icon.jpg', '/images/my.jpg'];
     const criticalFonts = ['https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap'];
     
     // 預載入關鍵圖片
@@ -132,32 +132,14 @@ export class PerformanceMonitor {
 export const ImageOptimizer = {
   // 創建響應式圖片
   createResponsiveImage(src: string, alt: string, sizes?: string): string {
-    const webpSrc = src.replace(/\.(jpg|jpeg|png)$/i, '.webp');
-    const smallSrc = webpSrc.replace(/\.webp$/i, '-small.webp');
-    
     return `
-      <picture>
-        <source 
-          srcset="${webpSrc}" 
-          type="image/webp" 
-          media="(min-width: 768px)"
-        >
-        <source 
-          srcset="${smallSrc}" 
-          type="image/webp" 
-          media="(max-width: 767px)"
-        >
-        <img 
-          src="${smallSrc}" 
-          data-src="${src}" 
-          alt="${alt}" 
-          loading="lazy" 
-          decoding="async" 
-          ${sizes ? `sizes="${sizes}"` : ''}
-          class="transition-opacity opacity-0"
-          onload="this.classList.remove('opacity-0')"
-        >
-      </picture>
+      <img 
+        src="${src}" 
+        alt="${alt}" 
+        loading="lazy" 
+        decoding="async" 
+        ${sizes ? `sizes="${sizes}"` : ''}
+      />
     `;
   },
 
@@ -169,8 +151,8 @@ export const ImageOptimizer = {
       suggestions.push('建議壓縮圖片至 1MB 以下');
     }
     
-    if (!file.type.includes('webp')) {
-      suggestions.push('建議使用 WebP 格式以獲得更好的壓縮率');
+    if (!file.type.includes('jpeg') && !file.type.includes('jpg')) {
+      suggestions.push('建議使用 JPG 格式以獲得更好的相容性');
     }
     
     return suggestions;

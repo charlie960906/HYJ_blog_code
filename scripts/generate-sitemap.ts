@@ -8,11 +8,12 @@ const __dirname = path.dirname(__filename);
 const domain = 'https://hyjblog.hyjdevelop.com';
 const publicPostPath = path.join(__dirname, '../public/posts');
 const distSitemapPath = path.join(__dirname, '../dist/sitemap.xml');
+const distRobotsPath = path.join(__dirname, '../dist/robots.txt');
 
 const staticRoutes = ['', '/tags', '/about', '/friends'];
 const categoryRoutes = ['information', 'reviews', 'finance', 'travel', 'life'];
 
-const buildSitemap = () => {
+const buildSitemapAndRobots = () => {
   const posts = fs.readdirSync(publicPostPath)
     .filter(name => name.endsWith('.md'))
     .map(name => name.replace(/\.md$/, ''));
@@ -47,6 +48,11 @@ ${urls.join('\n')}
 
   fs.writeFileSync(distSitemapPath, sitemap);
   console.log('✅ sitemap.xml generated at dist/sitemap.xml');
+
+  // 產生 robots.txt
+  const robots = `User-agent: *\nAllow: /\n\nSitemap: ${domain}/sitemap.xml\n`;
+  fs.writeFileSync(distRobotsPath, robots);
+  console.log('✅ robots.txt generated at dist/robots.txt');
 };
 
-buildSitemap();
+buildSitemapAndRobots();

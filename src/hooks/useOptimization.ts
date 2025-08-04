@@ -41,9 +41,9 @@ export const usePerformanceOptimization = () => {
     // 預熱快取 - 只在行動裝置上預熱必要的資源
     if (mobile) {
       CacheManager.prewarmCache([
-        '/images/icon-small.webp',
-        '/images/my-small.webp',
-        '/images/background-small.webp'
+        '/images/icon-small.jpg',
+        '/images/my-small.jpg',
+        '/images/background-small.jpg'
       ]);
     }
     
@@ -103,7 +103,7 @@ export const useSEOOptimization = (metadata?: {
         title: metadata.title || "HYJ's Blog",
         description: description,
         keywords: metadata.keywords || ['程式設計', '演算法', '財經', '投資', 'C++', 'JavaScript'],
-        image: metadata.image || (isMobile ? '/images/icon-small.webp' : '/images/icon.webp'),
+        image: metadata.image || (isMobile ? '/images/icon-small.jpg' : '/images/icon.jpg'),
         type: metadata.type || 'website',
         publishedTime: metadata.publishedTime,
         author: metadata.author || 'HYJ'

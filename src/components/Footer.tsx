@@ -91,7 +91,7 @@ const Footer: React.FC = () => {
             Chrome 90+ / Firefox 88+ / Safari 14+ / Edge 90+
           </div>
           <div className="text-white/40 text-xs sm:text-sm mt-2">
-            支援 ES2020、CSS Grid、Flexbox、WebP 等現代技術
+            支援 ES2020、CSS Grid、Flexbox、JPG 等現代技術
           </div>
         </div>
       </div>

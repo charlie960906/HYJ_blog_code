@@ -109,8 +109,8 @@ export class ResponsiveManager {
       // 根據裝置選擇圖片
       if (isMobile) {
         // 行動裝置使用小圖
-        const smallSrc = baseSrc.replace(/\.(jpg|jpeg|png|webp)$/i, '-small.$1');
-        htmlImg.src = smallSrc;
+        // 直接設置 img.src = baseSrc，不再產生 smallSrc
+        htmlImg.src = baseSrc;
         
         // 添加懶載入屬性
         if (!htmlImg.hasAttribute('loading')) {
@@ -143,8 +143,8 @@ export class ResponsiveManager {
       if (bgImage) {
         if (isMobile) {
           // 行動裝置使用小圖
-          const smallBgImage = bgImage.replace(/\.(jpg|jpeg|png|webp)$/i, '-small.$1');
-          element.style.backgroundImage = `url('${smallBgImage}')`;
+          // 直接設置 element.style.backgroundImage = `url('${bgImage}')`，不再產生 smallBgImage
+          element.style.backgroundImage = `url('${bgImage}')`;
         } else {
           element.style.backgroundImage = `url('${bgImage}')`;
         }

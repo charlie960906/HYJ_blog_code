@@ -123,15 +123,12 @@ const Navbar: React.FC = () => {
               setIsSearchOpen(false);
             }}
           >
-            <picture>
-              <source srcSet="/images/icon.webp" type="image/webp" />
-              <img
-                src="/images/icon.jpg"
-                alt="HYJ's Blog Logo"
-                loading="lazy"
-                className="w-10 h-10 rounded-lg object-contain shadow-sm"
-              />
-            </picture>
+            <img
+              src="/images/icon.jpg"
+              alt="HYJ's Blog Logo"
+              loading="lazy"
+              className="w-10 h-10 rounded-lg object-contain shadow-sm"
+            />
             <span className="text-xl font-semibold text-white hidden sm:block">
               HYJ's Blog
             </span>
