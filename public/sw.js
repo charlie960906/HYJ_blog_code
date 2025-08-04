@@ -11,12 +11,12 @@ const STATIC_ASSETS = [
   '/tags',
   '/about',
   '/friends',
-  '/images/icon.webp',
-  '/images/my.webp',
-  '/images/background.webp',
-  '/images/icon-small.webp',
-  '/images/my-small.webp',
-  '/images/background-small.webp'
+  '/images/icon.jpg',
+  '/images/my.jpg',
+  '/images/background.jpg',
+  '/images/f1_movie_pic1.jpg',
+  '/images/f1_movie_pic2.jpg',
+  '/images/f1_movie_pic3.jpg'
 ];
 
 // 字體檔案
@@ -299,8 +299,8 @@ self.addEventListener('push', (event) => {
     const data = event.data.json();
     const options = {
       body: data.body,
-      icon: '/images/icon.webp',
-      badge: '/images/icon-small.webp',
+      icon: '/images/icon.jpg',
+      badge: '/images/icon.jpg',
       vibrate: [100, 50, 100],
       data: {
         dateOfArrival: Date.now(),
