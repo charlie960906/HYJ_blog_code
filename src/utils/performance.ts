@@ -86,8 +86,10 @@ export class PerformanceMonitor {
   // 記憶體使用監控
   monitorMemoryUsage(): void {
     if ('memory' in performance) {
-      const memory = (performance as any).memory;
-      if (import.meta.env.DEV) {
+      interface MemoryInfo { usedJSHeapSize: number; totalJSHeapSize: number; jsHeapSizeLimit: number }
+      const perfWithMemory = performance as Performance & { memory?: MemoryInfo };
+      const memory = perfWithMemory.memory;
+      if (memory && import.meta.env.DEV) {
         console.log('Memory Usage:', {
           used: `${(memory.usedJSHeapSize / 1048576).toFixed(2)} MB`,
           total: `${(memory.totalJSHeapSize / 1048576).toFixed(2)} MB`,
@@ -107,7 +109,6 @@ export class PerformanceMonitor {
         htmlLink.onload = () => {
           htmlLink.media = 'all';
         };
-        htmlLink.href = htmlLink.href;
       }, 1000);
     });
     
@@ -210,7 +211,7 @@ export const CacheManager = {
           if (Date.now() > expiry) {
             localStorage.removeItem(key);
           }
-        } catch (error) {
+        } catch {
           localStorage.removeItem(key);
         }
       }

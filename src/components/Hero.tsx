@@ -1,13 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 
 const Hero: React.FC = () => {
-  const subtitles = [
+  const subtitles = useMemo(() => [
     "I'm not the best but I work hard",
     "Keep fighting, Keep pushing", 
     "謝謝你在這個世界的角落發現了我",
     "持續更新中...",
     "這個世界很大等著我去探索"
-  ];
+  ], []);
 
   const [currentSubtitle, setCurrentSubtitle] = useState(0);
   const [displayText, setDisplayText] = useState('');

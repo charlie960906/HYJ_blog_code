@@ -1,9 +1,9 @@
 // Service Worker for caching and performance optimization
-const CACHE_NAME = 'hyj-blog-v2025-08-04-23-43';
-const STATIC_CACHE = 'static-v2025-08-04-23-43';
-const DYNAMIC_CACHE = 'dynamic-v2025-08-04-23-43';
-const IMAGE_CACHE = 'images-v2025-08-04-23-43';
-const FONT_CACHE = 'fonts-v2025-08-04-23-43';
+const CACHE_NAME = 'hyj-blog-v2025-08-08-22-52';
+const STATIC_CACHE = 'static-v2025-08-08-22-52';
+const DYNAMIC_CACHE = 'dynamic-v2025-08-08-22-52';
+const IMAGE_CACHE = 'images-v2025-08-08-22-52';
+const FONT_CACHE = 'fonts-v2025-08-08-22-52';
 
 // 需要快取的靜態資源
 const STATIC_ASSETS = [

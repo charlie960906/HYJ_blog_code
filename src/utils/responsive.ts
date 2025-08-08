@@ -188,16 +188,7 @@ export class ResponsiveManager {
     if (this.isLowPerformanceDevice()) {
       return true;
     }
-    
-    // 檢查電池狀態
-    if ('getBattery' in navigator) {
-      (navigator as any).getBattery().then((battery: any) => {
-        if (battery.level < 0.2 && !battery.charging) {
-          return true;
-        }
-      }).catch(() => false);
-    }
-    
+
     return false;
   }
   
@@ -209,7 +200,7 @@ export class ResponsiveManager {
     
     // 檢查裝置記憶體 (如果可用)
     if ('deviceMemory' in navigator) {
-      const memory = (navigator as any).deviceMemory || 0;
+      const memory = (navigator as Navigator & { deviceMemory?: number }).deviceMemory || 0;
       if (memory < 4) return true;
     }
     

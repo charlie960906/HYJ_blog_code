@@ -11,6 +11,12 @@ interface TagData {
   color: string;
 }
 
+type TagInfo = {
+  name: string;
+  count: number;
+  size: number;
+};
+
 interface SidebarProps {
   isLoading?: boolean;
 }
@@ -69,8 +75,8 @@ const Sidebar: React.FC<SidebarProps> = ({ isLoading = false }) => {
         ];
 
         const processedTags = tagData
-          .filter((tag: any) => tag.name && typeof tag.count === 'number' && typeof tag.size === 'number')
-          .map((tag: any, index: number) => ({
+          .filter((tag: TagInfo) => tag.name && typeof tag.count === 'number' && typeof tag.size === 'number')
+          .map((tag: TagInfo, index: number) => ({
             ...tag,
             color: colors[index % colors.length]
           }))

@@ -102,7 +102,7 @@ const TagCloudPage: React.FC = () => {
             
             {/* 標籤容器 - 使用 flex wrap 自然排列 */}
             <div className="relative z-10 flex flex-wrap items-center justify-center gap-2 sm:gap-3 lg:gap-4 min-h-60 sm:min-h-80">
-              {tags.map((tag, index) => (
+              {tags.map((tag) => (
                 <Link
                   key={tag.name}
                   to={`/?tag=${encodeURIComponent(tag.name)}`}

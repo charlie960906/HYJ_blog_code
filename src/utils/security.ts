@@ -129,7 +129,7 @@ export class SecurityManager {
 
   // 安全的 localStorage 操作
   secureStorage = {
-    set: (key: string, value: any): void => {
+    set: (key: string, value: unknown): void => {
       try {
         const secureValue = {
           data: value,
@@ -142,7 +142,7 @@ export class SecurityManager {
       }
     },
 
-    get: (key: string): any => {
+    get: (key: string): unknown => {
       try {
         const stored = localStorage.getItem(key);
         if (!stored) return null;
@@ -156,7 +156,7 @@ export class SecurityManager {
         }
 
         return parsed.data;
-      } catch (error) {
+      } catch {
         localStorage.removeItem(key);
         return null;
       }

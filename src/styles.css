@@ -1124,8 +1124,9 @@ button:hover,
     }
     
     .post-card-meta {
-      flex-direction: column;
-      align-items: flex-start;
+    flex-direction: column;
+    align-items: flex-start;
+    text-align: left;
     }
   }
 }

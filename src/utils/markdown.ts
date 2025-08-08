@@ -26,7 +26,7 @@ renderer.image = function({ href, title, text }: { href: string; title: string |
 
 // 自定義連結渲染（支援圖片連結）
 renderer.link = function(
-  hrefOrObj: string | { href: string; title?: string | null; text: string; tokens?: any },
+  hrefOrObj: string | { href: string; title?: string | null; text: string; tokens?: unknown },
   title?: string | null,
   text?: string
 ) {
@@ -40,6 +40,14 @@ renderer.link = function(
   const titleAttr = title ? ` title="${title}"` : '';
   const target = href.startsWith('http') ? ' target="_blank" rel="noopener noreferrer"' : '';
   return `<a href="${href}"${titleAttr}${target}>${text}</a>`;
+};
+
+type FrontMatter = {
+  title?: string;
+  date?: string;
+  summary?: string;
+  tags?: string[];
+  category?: string;
 };
 
 export const parseMarkdown = (markdown: string, slug: string): Post => {
@@ -61,7 +69,7 @@ export const parseMarkdown = (markdown: string, slug: string): Post => {
     }
   }
   
-  let frontMatter: Record<string, any> = {};
+  const frontMatter: FrontMatter = {};
   let content = markdown;
   
   if (frontMatterStart !== -1 && frontMatterEnd !== -1) {
@@ -71,10 +79,24 @@ export const parseMarkdown = (markdown: string, slug: string): Post => {
       const match = line.match(/^(\w+):\s*(.*)$/);
       if (match) {
         const [, key, value] = match;
-        if (key === 'tags') {
-          frontMatter[key] = value.split(',').map(tag => tag.trim());
-        } else {
-          frontMatter[key] = value;
+        switch (key) {
+          case 'tags':
+            frontMatter.tags = value.split(',').map(tag => tag.trim());
+            break;
+          case 'title':
+            frontMatter.title = value;
+            break;
+          case 'date':
+            frontMatter.date = value;
+            break;
+          case 'summary':
+            frontMatter.summary = value;
+            break;
+          case 'category':
+            frontMatter.category = value;
+            break;
+          default:
+            break;
         }
       }
     });

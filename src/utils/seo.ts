@@ -133,7 +133,7 @@ export class SEOManager {
   }
 
   // 生成網站地圖數據
-  generateSitemapData(posts: any[]): string {
+  generateSitemapData(posts: Array<{ slug: string; date: string }>): string {
     const baseUrl = 'https://hyjblog.hyjdevelop.com';
     const staticPages = ['', '/tags', '/about', '/friends'];
     const categories = ['information', 'reviews', 'finance', 'travel', 'life'];

@@ -10,7 +10,7 @@ export const getAnalyticsData = async () => {
 };
 
 // GA4 事件追蹤函數 - 保留但簡化
-export const trackEvent = (eventName: string, parameters: Record<string, any> = {}) => {
+export const trackEvent = (eventName: string, parameters: Record<string, unknown> = {}) => {
   if (typeof gtag !== 'undefined') {
     gtag('event', eventName, parameters);
   }

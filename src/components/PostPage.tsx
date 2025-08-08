@@ -5,7 +5,6 @@ import { Post } from '../types/post';
 import { getPostBySlug } from '../utils/posts';
 import { trackPageView, trackPostRead } from '../utils/analytics';
 import { useSEOOptimization } from '../hooks/useOptimization';
-import LoadingSpinner from './LoadingSpinner';
 
 const PostPage: React.FC = () => {
   const { slug } = useParams<{ slug: string }>();
@@ -112,7 +111,7 @@ const PostPage: React.FC = () => {
           text: post.summary,
           url: window.location.href
         });
-      } catch (err) {
+      } catch {
         // 用戶取消分享或發生錯誤，回退到複製連結
         await navigator.clipboard.writeText(window.location.href);
         alert('連結已複製到剪貼板');
@@ -210,7 +209,7 @@ const PostPage: React.FC = () => {
           </h1>
 
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-            <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-4 space-y-2 sm:space-y-0 text-sm text-white/70">
+            <div className="flex flex-col items-start sm:flex-row sm:items-center sm:space-x-4 space-y-2 sm:space-y-0 text-sm text-white/70 text-left">
               <div className="flex items-center">
                 <Calendar className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />
                 <time className="text-xs sm:text-sm" dateTime={post.date}>

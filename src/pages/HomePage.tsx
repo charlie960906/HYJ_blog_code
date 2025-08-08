@@ -1,12 +1,10 @@
-import React, { useState, useEffect, useRef, Suspense, lazy } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useSearchParams, useParams } from 'react-router-dom';
 import LoadingSpinner from '../components/LoadingSpinner';
 import { Post } from '../types/post';
 import { getAllPosts, getPostsByCategory, filterPosts } from '../utils/posts';
 import { trackSearch } from '../utils/analytics';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
-import Navbar from '../components/Navbar';
-import Hero from '../components/Hero';
 import Sidebar from '../components/Sidebar';
 import PostCard from '../components/PostCard';
 import PostCardSkeleton from '../components/PostCardSkeleton';

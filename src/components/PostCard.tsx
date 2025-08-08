@@ -152,7 +152,7 @@ const PostCard: React.FC<PostCardProps> = ({ post, isLazy = false }) => {
         </h2>
 
         {/* Meta Info */}
-        <div className="post-card-meta flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-6 text-sm sm:text-base text-white/70">
+        <div className="post-card-meta flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-6 text-sm sm:text-base text-white/70 text-left">
           <div className="flex items-center">
             <Calendar className="w-4 h-4 sm:w-5 sm:h-5 mr-2 text-blue-400" />
             <span className="text-sm sm:text-base">{formatDate(post.date)}</span>
