@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
 import staticPages from '../data/staticPages';
+import { withBase } from '../utils/paths';
 
 interface StaticPageProps {
   pageKey: 'about' | 'friends';
@@ -51,7 +52,7 @@ const StaticPage: React.FC<StaticPageProps> = ({ pageKey }) => {
             </h1>
             <div className="flex flex-col items-center mt-2">
               <img
-                src="/images/my.jpg"
+                src={withBase('images/my.jpg')}
                 alt="HYJ's Image"
                 loading="lazy"
                 className="w-32 h-32 sm:w-40 sm:h-40 rounded-full object-cover shadow-lg border-4 border-white/20"

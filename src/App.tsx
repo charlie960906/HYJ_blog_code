@@ -1,5 +1,5 @@
 import React, { Suspense, lazy, useEffect, useState } from 'react';
-import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
+import { HashRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import { useWebsiteOptimization } from './hooks/useOptimization';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
@@ -8,6 +8,7 @@ import LoadingSpinner from './components/LoadingSpinner';
 import ScrollProgress from './components/ScrollProgress';
 import ScrollToTop from './components/ScrollToTop';
 import { setupGlobalErrorHandling } from './utils/errorReporting';
+import { withBase } from './utils/paths';
 import './styles.css';
 
 // Lazy load components
@@ -61,7 +62,7 @@ function App() {
         <div 
           className="background-image"
           style={{
-            backgroundImage: `url('/images/background.jpg')`,
+            backgroundImage: `url('${withBase('images/background.jpg')}')`,
             filter: `blur(${Math.min(scrollY / 10, 20)}px)`,
             opacity: 0.3,
             willChange: 'filter'

@@ -1,3 +1,5 @@
+import { withBase } from '../utils/paths';
+
 interface StaticPage {
   title: string;
   content: string;
@@ -14,7 +16,7 @@ const staticPages: StaticPages = {
     content: `
       <div class="space-y-6">
         <div class="text-center">
-          <img src="/images/my.jpg" alt="HYJ's Image" loading="lazy" class="w-24 h-24 sm:w-32 sm:h-32 rounded-full mx-auto mb-4 sm:mb-6 object-cover about-image">
+          <img src="${withBase('images/my.jpg')}" alt="HYJ's Image" loading="lazy" class="w-24 h-24 sm:w-32 sm:h-32 rounded-full mx-auto mb-4 sm:mb-6 object-cover about-image">
           <div class="text-2xl sm:text-3xl font-bold text-white">嗨嗨嗨！我是老黃</div>
         </div>
       

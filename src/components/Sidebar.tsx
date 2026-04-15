@@ -3,6 +3,7 @@ import { Link, useParams, useLocation } from 'react-router-dom';
 import { User, Tag as TagIcon } from 'lucide-react';
 import { getTagsWithFrequency } from '../utils/tags';
 import SidebarSkeleton from './SidebarSkeleton';
+import { withBase } from '../utils/paths';
 
 interface TagData {
   name: string;
@@ -124,8 +125,8 @@ const Sidebar: React.FC<SidebarProps> = ({ isLoading = false }) => {
         </div>
         <div className="space-y-3">
           <picture>
-            <source srcSet="/images/my.webp" type="image/webp" />
-            <img src="/images/my.jpg" alt="HYJ's Image" loading="lazy" className="w-20 h-20 sm:w-24 sm:h-24 lg:w-32 lg:h-32 rounded-full mx-auto mb-3 sm:mb-4 object-cover sidebar-about-image" />
+            <source srcSet={withBase('images/my.webp')} type="image/webp" />
+            <img src={withBase('images/my.jpg')} alt="HYJ's Image" loading="lazy" className="w-20 h-20 sm:w-24 sm:h-24 lg:w-32 lg:h-32 rounded-full mx-auto mb-3 sm:mb-4 object-cover sidebar-about-image" />
           </picture>
           <p className="text-white text-base sm:text-lg font-bold text-center mb-2">老黃</p>
           <p className="text-white/80 text-xs sm:text-sm text-center leading-relaxed">

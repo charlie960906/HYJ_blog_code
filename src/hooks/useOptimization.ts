@@ -4,6 +4,7 @@ import { SEOManager } from '../utils/seo';
 import { SecurityManager } from '../utils/security';
 import { ResponsiveManager } from '../utils/responsive';
 import { AccessibilityManager } from '../utils/accessibility';
+import { withBase } from '../utils/paths';
 
 // 效能優化 Hook
 export const usePerformanceOptimization = () => {
@@ -41,9 +42,9 @@ export const usePerformanceOptimization = () => {
     // 預熱快取 - 只在行動裝置上預熱必要的資源
     if (mobile) {
       CacheManager.prewarmCache([
-        '/images/icon-small.webp',
-        '/images/my-small.webp',
-        '/images/background-small.webp'
+        withBase('images/icon-small.webp'),
+        withBase('images/my-small.webp'),
+        withBase('images/background-small.webp')
       ]);
     }
     
@@ -103,7 +104,7 @@ export const useSEOOptimization = (metadata?: {
         title: metadata.title || "HYJ's Blog",
         description: description,
         keywords: metadata.keywords || ['程式設計', '演算法', '財經', '投資', 'C++', 'JavaScript'],
-        image: metadata.image || (isMobile ? '/images/icon-small.webp' : '/images/icon.webp'),
+        image: metadata.image || (isMobile ? withBase('images/icon-small.webp') : withBase('images/icon.webp')),
         type: metadata.type || 'website',
         publishedTime: metadata.publishedTime,
         author: metadata.author || 'HYJ'

@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Search, Menu, X } from 'lucide-react';
+import { withBase } from '../utils/paths';
 
 const Navbar: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -124,9 +125,9 @@ const Navbar: React.FC = () => {
             }}
           >
             <picture>
-              <source srcSet="/images/icon.webp" type="image/webp" />
+              <source srcSet={withBase('images/icon.webp')} type="image/webp" />
               <img
-                src="/images/icon.jpg"
+                src={withBase('images/icon.jpg')}
                 alt="HYJ's Blog Logo"
                 loading="lazy"
                 className="w-10 h-10 rounded-lg object-contain shadow-sm"

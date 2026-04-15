@@ -1,5 +1,6 @@
 import { marked } from 'marked';
 import { Post } from '../types/post';
+import { withBase } from './paths';
 
 // 配置 marked 選項
 marked.setOptions({
@@ -10,15 +11,17 @@ marked.setOptions({
 
 // 自定義渲染器
 const renderer = new marked.Renderer();
+const normalizeAssetPath = (url: string): string => (url.startsWith('/') ? withBase(url) : url);
 
 // 自定義圖片渲染
 renderer.image = function({ href, title, text }: { href: string; title: string | null; text: string }) {
+  const normalizedHref = normalizeAssetPath(href);
   const titleAttr = title ? ` title="${title}"` : '';
   const altAttr = text ? ` alt="${text}"` : '';
   
   return `
     <div class="image-container">
-      <img src="${href}"${altAttr}${titleAttr} loading="lazy" />
+      <img src="${normalizedHref}"${altAttr}${titleAttr} loading="lazy" />
       ${title ? `<p class="image-caption">${title}</p>` : ''}
     </div>
   `;
@@ -32,11 +35,12 @@ renderer.link = function(
 ) {
   if (typeof hrefOrObj === 'object' && hrefOrObj !== null) {
     const { href, title, text } = hrefOrObj;
+    const normalizedHref = normalizeAssetPath(href);
     const titleAttr = title ? ` title="${title}"` : '';
-    const target = href.startsWith('http') ? ' target="_blank" rel="noopener noreferrer"' : '';
-    return `<a href="${href}"${titleAttr}${target}>${text}</a>`;
+    const target = normalizedHref.startsWith('http') ? ' target="_blank" rel="noopener noreferrer"' : '';
+    return `<a href="${normalizedHref}"${titleAttr}${target}>${text}</a>`;
   }
-  const href = hrefOrObj as string;
+  const href = normalizeAssetPath(hrefOrObj as string);
   const titleAttr = title ? ` title="${title}"` : '';
   const target = href.startsWith('http') ? ' target="_blank" rel="noopener noreferrer"' : '';
   return `<a href="${href}"${titleAttr}${target}>${text}</a>`;

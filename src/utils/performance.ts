@@ -1,3 +1,5 @@
+import { withBase } from './paths';
+
 // 效能監控與優化工具
 export class PerformanceMonitor {
   private static instance: PerformanceMonitor;
@@ -57,7 +59,7 @@ export class PerformanceMonitor {
 
   // 預載入關鍵資源
   preloadCriticalResources(): void {
-    const criticalImages = ['/images/icon.webp', '/images/my.webp'];
+    const criticalImages = [withBase('images/icon.webp'), withBase('images/my.webp')];
     const criticalFonts = ['https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap'];
     
     // 預載入關鍵圖片
@@ -211,7 +213,7 @@ export const CacheManager = {
   setCacheHeaders(): void {
     // 這將在 service worker 中實現
     if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('/sw.js').catch(console.error);
+      navigator.serviceWorker.register(withBase('sw.js')).catch(console.error);
     }
   },
 

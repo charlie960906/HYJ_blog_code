@@ -4,6 +4,8 @@ import { visualizer } from 'rollup-plugin-visualizer';
 
 // https://vitejs.dev/config/
 export default defineConfig({
+  // 使用相對路徑，讓 dist 可直接搬移使用
+  base: './',
   plugins: [
     react(),
     // 僅在需要時啟用 visualizer

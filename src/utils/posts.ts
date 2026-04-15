@@ -1,5 +1,6 @@
 import { Post } from '../types/post';
 import { parseMarkdown } from './markdown';
+import { withBase } from './paths';
 
 const getAvailablePostSlugs = (): string[] => {
   return [
@@ -32,7 +33,7 @@ export const getAllPosts = async (): Promise<Post[]> => {
   // 先載入優先文章
   for (const slug of prioritySlugs) {
     try {
-      const response = await fetch(`/posts/${slug}.md`);
+      const response = await fetch(withBase(`posts/${slug}.md`));
       if (response.ok) {
         const markdown = await response.text();
         const post = parseMarkdown(markdown, slug);
@@ -46,7 +47,7 @@ export const getAllPosts = async (): Promise<Post[]> => {
   // 再載入其餘文章
   for (const slug of remainingSlugs) {
     try {
-      const response = await fetch(`/posts/${slug}.md`);
+      const response = await fetch(withBase(`posts/${slug}.md`));
       if (response.ok) {
         const markdown = await response.text();
         const post = parseMarkdown(markdown, slug);
@@ -63,7 +64,7 @@ export const getAllPosts = async (): Promise<Post[]> => {
 
 export const getPostBySlug = async (slug: string): Promise<Post | null> => {
   try {
-    const response = await fetch(`/posts/${slug}.md`);
+    const response = await fetch(withBase(`posts/${slug}.md`));
     if (!response.ok) {
       return null;
     }
