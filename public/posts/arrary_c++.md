@@ -4,6 +4,7 @@ date: 2025-07-08
 summary: 本文介紹 C++ 陣列的基本概念，包括一維、多維陣列的宣告與使用、記憶體表示法、字串、多項式與矩陣應用，以及陣列與指標的關係。
 tags: C++, Array, 陣列
 category: information
+render_with_liquid: false
 ---
 
 # C++ 陣列（Array）
