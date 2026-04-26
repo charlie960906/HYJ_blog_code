@@ -4,8 +4,8 @@ import { visualizer } from 'rollup-plugin-visualizer';
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  // 使用相對路徑，讓 dist 可直接搬移使用
-  base: './',
+  // 使用絕對路徑，避免在子路由下資源路徑錯誤（例如 /about 解析成 /about/images/...）
+  base: '/',
   plugins: [
     react(),
     // 僅在需要時啟用 visualizer
