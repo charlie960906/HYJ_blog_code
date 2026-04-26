@@ -109,7 +109,7 @@ export class ResponsiveManager {
       // 根據裝置選擇圖片
       if (isMobile) {
         // 行動裝置使用小圖
-        const smallSrc = baseSrc.replace(/\.(jpg|jpeg|png|webp)$/i, '-small.$1');
+        const smallSrc = baseSrc.replace(/\.(jpg|jpeg|png)$/i, '-small.$1');
         htmlImg.src = smallSrc;
         
         // 添加懶載入屬性
@@ -143,7 +143,7 @@ export class ResponsiveManager {
       if (bgImage) {
         if (isMobile) {
           // 行動裝置使用小圖
-          const smallBgImage = bgImage.replace(/\.(jpg|jpeg|png|webp)$/i, '-small.$1');
+          const smallBgImage = bgImage.replace(/\.(jpg|jpeg|png)$/i, '-small.$1');
           element.style.backgroundImage = `url('${smallBgImage}')`;
         } else {
           element.style.backgroundImage = `url('${bgImage}')`;
@@ -264,7 +264,6 @@ export class ResponsiveManager {
 
   // 檢查瀏覽器支援
   checkBrowserSupport(): {
-    webp: boolean;
     avif: boolean;
     intersectionObserver: boolean;
     serviceWorker: boolean;
@@ -275,7 +274,6 @@ export class ResponsiveManager {
     };
   } {
     return {
-      webp: this.supportsWebP(),
       avif: this.supportsAVIF(),
       intersectionObserver: 'IntersectionObserver' in window,
       serviceWorker: 'serviceWorker' in navigator,
@@ -285,13 +283,6 @@ export class ResponsiveManager {
         customProperties: CSS.supports('--test', 'test')
       }
     };
-  }
-
-  private supportsWebP(): boolean {
-    const canvas = document.createElement('canvas');
-    canvas.width = 1;
-    canvas.height = 1;
-    return canvas.toDataURL('image/webp').indexOf('data:image/webp') === 0;
   }
   
   private supportsAVIF(): boolean {
@@ -308,8 +299,6 @@ export class ResponsiveManager {
     
     // 設置 CSS 自定義屬性
     const support = this.checkBrowserSupport();
-    document.documentElement.classList.toggle('webp', support.webp);
-    document.documentElement.classList.toggle('no-webp', !support.webp);
     document.documentElement.classList.toggle('avif', support.avif);
     document.documentElement.classList.toggle('no-avif', !support.avif);
     

@@ -16,27 +16,10 @@ interface SidebarProps {
   isLoading?: boolean;
 }
 
-// 新增 usePageLoaded hook
-function usePageLoaded() {
-  const [loaded, setLoaded] = useState(false);
-  useEffect(() => {
-    if (document.readyState === 'complete' || document.readyState === 'interactive') {
-      setLoaded(true);
-    } else {
-      const onReady = () => setLoaded(true);
-      window.addEventListener('DOMContentLoaded', onReady);
-      return () => window.removeEventListener('DOMContentLoaded', onReady);
-    }
-  }, []);
-  return loaded;
-}
-
 const Sidebar: React.FC<SidebarProps> = ({ isLoading = false }) => {
   const [tags, setTags] = useState<TagData[]>([]);
   const [tagsLoading, setTagsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  // 新增：判斷頁面是否載入完成
-  const pageLoaded = usePageLoaded();
   // 獲取當前路徑和分類參數，用於檢測頁面變化
   const location = useLocation();
   const { category } = useParams();
@@ -90,7 +73,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isLoading = false }) => {
   }, [location.pathname, category]); // 添加依賴項，當路徑或分類變化時重新加載標籤
 
   // 如果整體還在載入，顯示骨架屏
-  if (isLoading || !pageLoaded || tagsLoading) {
+  if (isLoading) {
     return <SidebarSkeleton />;
   }
 
@@ -124,10 +107,14 @@ const Sidebar: React.FC<SidebarProps> = ({ isLoading = false }) => {
           <h3 className="text-xl font-semibold text-white">關於我</h3>
         </div>
         <div className="space-y-3">
-          <picture>
-            <source srcSet={withBase('images/my.webp')} type="image/webp" />
-            <img src={withBase('images/my.jpg')} alt="HYJ's Image" loading="lazy" className="w-20 h-20 sm:w-24 sm:h-24 lg:w-32 lg:h-32 rounded-full mx-auto mb-3 sm:mb-4 object-cover sidebar-about-image" />
-          </picture>
+          <img
+            src={withBase('images/my.jpg')}
+            alt="HYJ's Image"
+            loading="eager"
+            fetchPriority="high"
+            decoding="async"
+            className="w-20 h-20 sm:w-24 sm:h-24 lg:w-32 lg:h-32 rounded-full mx-auto mb-3 sm:mb-4 object-cover sidebar-about-image"
+          />
           <p className="text-white text-base sm:text-lg font-bold text-center mb-2">老黃</p>
           <p className="text-white/80 text-xs sm:text-sm text-center leading-relaxed">
             目前主要興趣在於演算法、人工智慧、財經投資等～

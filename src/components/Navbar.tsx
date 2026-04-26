@@ -124,15 +124,12 @@ const Navbar: React.FC = () => {
               setIsSearchOpen(false);
             }}
           >
-            <picture>
-              <source srcSet={withBase('images/icon.webp')} type="image/webp" />
-              <img
-                src={withBase('images/icon.jpg')}
-                alt="HYJ's Blog Logo"
-                loading="lazy"
-                className="w-10 h-10 rounded-lg object-contain shadow-sm"
-              />
-            </picture>
+            <img
+              src={withBase('images/icon.jpg')}
+              alt="HYJ's Blog Logo"
+              loading="lazy"
+              className="w-10 h-10 rounded-lg object-contain shadow-sm"
+            />
             <span className="text-xl font-semibold text-white hidden sm:block">
               HYJ's Blog
             </span>
@@ -158,14 +155,14 @@ const Navbar: React.FC = () => {
               <div className="flex items-center justify-end">
                 {/* 搜尋框 */}
                 <div 
-                  className={`absolute right-12 top-1/2 transform -translate-y-1/2 transition-all duration-300 ease-in-out ${
+                  className={`absolute right-0 top-full mt-2 transition-all duration-300 ease-in-out ${
                     isSearchOpen 
                       ? 'opacity-100 scale-100 pointer-events-auto' 
                       : 'opacity-0 scale-95 pointer-events-none'
                   }`}
                   style={{ 
-                    transformOrigin: 'right center',
-                    zIndex: 10
+                    transformOrigin: 'right top',
+                    zIndex: 60
                   }}
                 >
                   <form onSubmit={handleSearch}>
@@ -175,7 +172,7 @@ const Navbar: React.FC = () => {
                       placeholder="搜尋文章..."
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
-                      className="w-48 px-4 py-2 pr-4 glassmorphism-input text-white placeholder-white/60 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-400 focus:bg-white/15"
+                      className="w-64 px-4 py-2 pr-4 glassmorphism-input text-white placeholder-white/60 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-400 focus:bg-white/15"
                       onKeyDown={(e) => {
                         if (e.key === 'Escape') {
                           setIsSearchOpen(false);

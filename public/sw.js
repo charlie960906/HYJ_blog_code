@@ -132,7 +132,7 @@ self.addEventListener('fetch', (event) => {
   }
 
   // 圖片檔案 - Cache First + 根據裝置選擇不同大小的圖片
-  if (request.url.includes('/images/') || request.url.endsWith('.jpg') || request.url.endsWith('.webp') || request.url.endsWith('.png')) {
+  if (request.url.includes('/images/') || request.url.endsWith('.jpg') || request.url.endsWith('.png')) {
     event.respondWith(
       caches.match(request)
         .then((response) => {
@@ -148,7 +148,7 @@ self.addEventListener('fetch', (event) => {
               
               if (isMobileDevice && !isSmallImage) {
                 // 嘗試獲取小圖版本
-                const smallImageUrl = request.url.replace(/\.(jpg|jpeg|png|webp)$/i, '-small.$1');
+                const smallImageUrl = request.url.replace(/\.(jpg|jpeg|png)$/i, '-small.$1');
                 return fetch(smallImageUrl)
                   .then((smallResponse) => {
                     if (smallResponse.ok) {

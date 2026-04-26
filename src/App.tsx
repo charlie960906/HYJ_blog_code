@@ -7,6 +7,8 @@ import Footer from './components/Footer';
 import LoadingSpinner from './components/LoadingSpinner';
 import ScrollProgress from './components/ScrollProgress';
 import ScrollToTop from './components/ScrollToTop';
+import TagCloudPage from './components/TagCloudPage';
+import StaticPage from './components/StaticPage';
 import { setupGlobalErrorHandling } from './utils/errorReporting';
 import { withBase } from './utils/paths';
 import './styles.css';
@@ -14,8 +16,6 @@ import './styles.css';
 // Lazy load components
 const HomePage = lazy(() => import('./pages/HomePage'));
 const PostPage = lazy(() => import('./components/PostPage'));
-const TagCloudPage = lazy(() => import('./components/TagCloudPage'));
-const StaticPage = lazy(() => import('./components/StaticPage'));
 const NotFoundPage = lazy(() => import('./components/NotFoundPage'));
 
 // 滾動到頂部組件
