@@ -20,13 +20,34 @@ export default defineConfig({
     // 程式碼分割優化
     rollupOptions: {
       output: {
-        manualChunks: {
-          vendor: ['react', 'react-dom'],
-          router: ['react-router-dom'],
-          icons: ['lucide-react'],
-          markdown: ['marked'],
+        manualChunks: (id) => {
+          const normalized = id.replaceAll('\\', '/');
+
+          if (normalized.includes('/node_modules/')) {
+            if (normalized.includes('/node_modules/react/') || normalized.includes('/node_modules/react-dom/')) {
+              return 'vendor';
+            }
+            if (normalized.includes('/node_modules/react-router-dom/')) {
+              return 'router';
+            }
+            if (normalized.includes('/node_modules/lucide-react/')) {
+              return 'icons';
+            }
+            if (normalized.includes('/node_modules/marked/')) {
+              return 'markdown';
+            }
+            return 'vendor';
+          }
+
           // 為手機版單獨打包
-          mobile: ['./src/utils/responsive.ts', './src/utils/performance.ts']
+          if (
+            normalized.endsWith('/src/utils/responsive.ts') ||
+            normalized.endsWith('/src/utils/performance.ts')
+          ) {
+            return 'mobile';
+          }
+
+          return undefined;
         },
         // 減少 chunk 大小
         chunkFileNames: (chunkInfo) => {
