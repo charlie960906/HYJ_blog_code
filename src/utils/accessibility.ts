@@ -16,6 +16,7 @@ export class AccessibilityManager {
     this.setupScreenReaderSupport();
     this.setupColorContrastCheck();
     this.setupReducedMotion();
+    this.checkTouchTargets();
   }
 
   // 鍵盤導航
@@ -49,9 +50,6 @@ export class AccessibilityManager {
 
   // 焦點管理
   private setupFocusManagement(): void {
-    // 跳過連結
-    this.createSkipLink();
-
     // 焦點指示器
     document.addEventListener('keydown', (event) => {
       if (event.key === 'Tab') {
@@ -62,35 +60,6 @@ export class AccessibilityManager {
     document.addEventListener('mousedown', () => {
       document.body.classList.remove('keyboard-navigation');
     });
-  }
-
-  // 創建跳過連結
-  private createSkipLink(): void {
-    const skipLink = document.createElement('a');
-    skipLink.href = '#main-content';
-    skipLink.textContent = '跳到主要內容';
-    skipLink.className = 'skip-link';
-    skipLink.style.cssText = `
-      position: absolute;
-      top: -40px;
-      left: 6px;
-      background: #000;
-      color: #fff;
-      padding: 8px;
-      text-decoration: none;
-      z-index: 10000;
-      border-radius: 4px;
-    `;
-
-    skipLink.addEventListener('focus', () => {
-      skipLink.style.top = '6px';
-    });
-
-    skipLink.addEventListener('blur', () => {
-      skipLink.style.top = '-40px';
-    });
-
-    document.body.insertBefore(skipLink, document.body.firstChild);
   }
 
   // Tab 導航處理
@@ -149,41 +118,68 @@ export class AccessibilityManager {
   // 顏色對比檢查
   private setupColorContrastCheck(): void {
     if (import.meta.env.DEV) {
-      const textElements = document.querySelectorAll('p, h1, h2, h3, h4, h5, h6, span, a');
+      const textElements = document.querySelectorAll('p, h1, h2, h3, h4, h5, h6, span, a, button');
       
       textElements.forEach(element => {
         const styles = window.getComputedStyle(element);
         const textColor = styles.color;
         const backgroundColor = styles.backgroundColor;
         
-        if (this.getContrastRatio(textColor, backgroundColor) < 4.5) {
-          console.warn('顏色對比度不足:', element, { textColor, backgroundColor });
+        // 跳過透明背景
+        if (backgroundColor === 'rgba(0, 0, 0, 0)' || backgroundColor === 'transparent') {
+          return;
+        }
+        
+        const contrastRatio = this.getContrastRatio(textColor, backgroundColor);
+        const requiredRatio = this.getRequiredContrastRatio(element);
+        
+        if (contrastRatio < requiredRatio) {
+          console.warn(`顏色對比度不足 (${contrastRatio.toFixed(2)}:${requiredRatio}):`, element, { textColor, backgroundColor });
         }
       });
     }
   }
 
-  // 計算顏色對比度
-  private getContrastRatio(color1: string, color2: string): number {
-    // 簡化的對比度計算，實際應用中需要更精確的計算
-    const rgb1 = this.parseRGB(color1);
-    const rgb2 = this.parseRGB(color2);
+  // 獲取所需的對比度比例
+  private getRequiredContrastRatio(element: Element): number {
+    const tagName = element.tagName.toLowerCase();
+    const fontSize = parseFloat(window.getComputedStyle(element).fontSize);
     
-    const l1 = this.getLuminance(rgb1);
-    const l2 = this.getLuminance(rgb2);
+    // 大文本（18pt+ 或 14pt+粗體）需要 3:1，其餘需要 4.5:1
+    const isLargeText = fontSize >= 18 || (fontSize >= 14 && window.getComputedStyle(element).fontWeight >= '700');
     
-    const lighter = Math.max(l1, l2);
-    const darker = Math.min(l1, l2);
-    
-    return (lighter + 0.05) / (darker + 0.05);
+    return isLargeText ? 3.0 : 4.5;
   }
 
-  private parseRGB(color: string): [number, number, number] {
-    const match = color.match(/rgb\((\d+),\s*(\d+),\s*(\d+)\)/);
-    if (match) {
-      return [parseInt(match[1]), parseInt(match[2]), parseInt(match[3])];
+  // 增強的顏色解析（支援 RGB、RGBA、HEX）
+  private parseRGB(color: string): [number, number, number] | null {
+    // RGB/RGBA 格式
+    const rgbMatch = color.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*[\d.]+)?\)/);
+    if (rgbMatch) {
+      return [parseInt(rgbMatch[1]), parseInt(rgbMatch[2]), parseInt(rgbMatch[3])];
     }
-    return [0, 0, 0];
+    
+    // HEX 格式
+    const hexMatch = color.match(/^#([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i);
+    if (hexMatch) {
+      return [
+        parseInt(hexMatch[1], 16),
+        parseInt(hexMatch[2], 16),
+        parseInt(hexMatch[3], 16)
+      ];
+    }
+    
+    // 簡寫 HEX 格式
+    const shortHexMatch = color.match(/^#([a-f\d])([a-f\d])([a-f\d])$/i);
+    if (shortHexMatch) {
+      return [
+        parseInt(shortHexMatch[1] + shortHexMatch[1], 16),
+        parseInt(shortHexMatch[2] + shortHexMatch[2], 16),
+        parseInt(shortHexMatch[3] + shortHexMatch[3], 16)
+      ];
+    }
+    
+    return null;
   }
 
   private getLuminance([r, g, b]: [number, number, number]): number {
@@ -239,14 +235,18 @@ export class AccessibilityManager {
     return liveRegion;
   }
 
-  // 宣告訊息給螢幕閱讀器
-  announceToScreenReader(message: string): void {
-    const liveRegion = document.querySelector('[aria-live]') || this.setupLiveRegion();
-    liveRegion.textContent = message;
-    
-    // 清除訊息
-    setTimeout(() => {
-      liveRegion.textContent = '';
-    }, 1000);
+  // 檢查互動元素的可觸控目標大小
+  checkTouchTargets(): void {
+    if (import.meta.env.DEV) {
+      const interactiveElements = document.querySelectorAll('button, a, input[type="button"], input[type="submit"], [role="button"]');
+      
+      interactiveElements.forEach(element => {
+        const rect = element.getBoundingClientRect();
+        const minSize = 44; // WCAG 建議的最小觸控目標大小（44x44px）
+        
+        if (rect.width < minSize || rect.height < minSize) {
+          console.warn(`觸控目標太小 (${rect.width.toFixed(1)}x${rect.height.toFixed(1)}px，建議至少 ${minSize}x${minSize}px):`, element);
+        }
+      });
+    }
   }
-}

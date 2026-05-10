@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Clock, FileText, BarChart3, Monitor } from 'lucide-react';
 import { calculateUptime } from '../utils/time';
 import { getAnalyticsData } from '../utils/analytics';
+import { SEOManager } from '../utils/seo';
 
 const Footer: React.FC = () => {
   const [uptime, setUptime] = useState(calculateUptime());
@@ -29,6 +30,17 @@ const Footer: React.FC = () => {
     };
 
     loadAnalytics();
+  }, []);
+
+  useEffect(() => {
+    // 生成網站結構化數據
+    const seoManager = SEOManager.getInstance();
+    seoManager.generateStructuredData({
+      title: "HYJ's Blog",
+      description: "HYJ's Blog - 分享程式設計、演算法、財經投資等內容",
+      type: 'website',
+      url: window.location.origin
+    });
   }, []);
 
   return (

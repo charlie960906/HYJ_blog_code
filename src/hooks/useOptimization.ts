@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { PerformanceMonitor, CacheManager } from '../utils/performance';
+import { PerformanceMonitor, CacheManager, PrefetchManager } from '../utils/performance';
 import { SEOManager } from '../utils/seo';
 import { SecurityManager } from '../utils/security';
 import { ResponsiveManager } from '../utils/responsive';
@@ -14,6 +14,9 @@ export const usePerformanceOptimization = () => {
     const monitor = PerformanceMonitor.getInstance();
     const startTime = performance.now();
     
+    // 初始化 Web Vitals 監控
+    monitor.initWebVitalsTracking();
+    
     // 檢測是否為行動裝置
     const responsive = ResponsiveManager.getInstance();
     const checkMobile = () => {
@@ -26,15 +29,18 @@ export const usePerformanceOptimization = () => {
     // 預載入關鍵資源
     monitor.preloadCriticalResources();
     
-    // 設置圖片懶載入
-    const imageObserver = monitor.createImageObserver();
-    const images = document.querySelectorAll('img[loading="lazy"]');
+    // 設置增強的圖片懶載入
+    const imageObserver = monitor.createEnhancedImageObserver();
+    const images = document.querySelectorAll('img[loading="lazy"], picture');
     images.forEach(img => imageObserver.observe(img));
     
-    // 延遲載入非關鍵資源
+    // 設置智能預取
+    PrefetchManager.setupSmartPrefetch();
+    
+    // 預取可能的下一個頁面
     setTimeout(() => {
-      monitor.deferNonCriticalResources();
-    }, 2000);
+      PrefetchManager.prefetchLikelyPages();
+    }, 1000);
     
     // 清理過期快取
     CacheManager.clearExpiredCache();
@@ -43,8 +49,7 @@ export const usePerformanceOptimization = () => {
     if (mobile) {
       CacheManager.prewarmCache([
         withBase('images/icon.jpg'),
-        withBase('images/my.jpg'),
-        withBase('images/background.jpg')
+        withBase('images/my.jpg')
       ]);
     }
     

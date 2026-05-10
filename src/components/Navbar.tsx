@@ -123,6 +123,7 @@ const Navbar: React.FC = () => {
               setIsMenuOpen(false);
               setIsSearchOpen(false);
             }}
+            aria-label="HYJ's Blog 首頁"
           >
             <img
               src={withBase('images/icon.jpg')}
@@ -151,7 +152,7 @@ const Navbar: React.FC = () => {
           {/* 右側功能區 */}
           <div className="flex items-center justify-end space-x-2">
             {/* 桌面版搜尋 */}
-            <div className="hidden md:block search-container relative">
+            <div className="hidden md:block search-container relative" role="search" aria-label="網站搜尋">
               <div className="flex items-center justify-end">
                 {/* 搜尋框 */}
                 <div 
@@ -202,6 +203,7 @@ const Navbar: React.FC = () => {
               className="md:hidden lg:hidden text-white p-2 hover:bg-white/10 rounded-lg transition-all duration-200 hover:scale-105"
               aria-label="選單"
               aria-expanded={isMenuOpen}
+              aria-controls="mobile-menu"
             >
               {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
             </button>
@@ -212,6 +214,7 @@ const Navbar: React.FC = () => {
               className="hidden md:block lg:hidden text-white p-2 hover:bg-white/10 rounded-lg transition-all duration-200 hover:scale-105"
               aria-label="選單"
               aria-expanded={isMenuOpen}
+              aria-controls="mobile-menu"
             >
               {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
             </button>
@@ -221,6 +224,7 @@ const Navbar: React.FC = () => {
         {/* 手機版和中等螢幕選單 */}
         {isMenuOpen && (
           <div 
+            id="mobile-menu"
             ref={menuRef}
             className="lg:hidden glassmorphism-card mt-2 p-4 space-y-4 animate-fadeIn border border-white/10"
           >

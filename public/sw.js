@@ -13,7 +13,6 @@ const STATIC_ASSETS = [
   '/friends',
   '/images/icon.jpg',
   '/images/my.jpg',
-  '/images/background.jpg',
   '/images/f1_movie_pic1.jpg',
   '/images/f1_movie_pic2.jpg',
   '/images/f1_movie_pic3.jpg'

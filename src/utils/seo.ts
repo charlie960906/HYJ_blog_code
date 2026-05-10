@@ -10,6 +10,10 @@ export interface SEOMetadata {
   modifiedTime?: string;
   author?: string;
   section?: string;
+  wordCount?: number;
+  articleBody?: string;
+  robots?: string;
+  viewport?: string;
 }
 
 export class SEOManager {
@@ -32,8 +36,16 @@ export class SEOManager {
 
     // 基本 meta 標籤
     this.setMetaTag('description', metadata.description);
-    if (metadata.keywords) {
+    if (metadata.keywords && metadata.keywords.length > 0) {
       this.setMetaTag('keywords', metadata.keywords.join(', '));
+    }
+
+    // Robots 和 Viewport
+    if (metadata.robots) {
+      this.setMetaTag('robots', metadata.robots);
+    }
+    if (metadata.viewport) {
+      this.setMetaTag('viewport', metadata.viewport);
     }
 
     // Open Graph 標籤
@@ -47,6 +59,8 @@ export class SEOManager {
     if (metadata.image) {
       this.setMetaProperty('og:image', metadata.image);
       this.setMetaProperty('og:image:alt', metadata.title);
+      this.setMetaProperty('og:image:width', '1200');
+      this.setMetaProperty('og:image:height', '630');
     }
 
     // Twitter Card 標籤
@@ -79,7 +93,8 @@ export class SEOManager {
 
   // 生成結構化數據
   generateStructuredData(metadata: SEOMetadata): void {
-    const structuredData = {
+    const baseUrl = window.location.origin;
+    const structuredData: any = {
       "@context": "https://schema.org",
       "@type": metadata.type === 'article' ? "BlogPosting" : "WebSite",
       "headline": metadata.title,
@@ -90,7 +105,7 @@ export class SEOManager {
         "name": "HYJ's Blog",
         "logo": {
           "@type": "ImageObject",
-          "url": `${window.location.origin}/images/icon.jpg`
+          "url": `${baseUrl}/images/icon.jpg`
         }
       }
     };
@@ -110,12 +125,24 @@ export class SEOManager {
       });
 
       if (metadata.image) {
-        Object.assign(structuredData, {
-          "image": {
-            "@type": "ImageObject",
-            "url": metadata.image
-          }
-        });
+        structuredData.image = {
+          "@type": "ImageObject",
+          "url": metadata.image,
+          "width": 1200,
+          "height": 630
+        };
+      }
+
+      if (metadata.wordCount) {
+        structuredData.wordCount = metadata.wordCount;
+      }
+
+      if (metadata.articleBody) {
+        structuredData.articleBody = metadata.articleBody;
+      }
+
+      if (metadata.section) {
+        structuredData.articleSection = metadata.section;
       }
     }
 

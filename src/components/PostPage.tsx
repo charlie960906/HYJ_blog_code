@@ -198,6 +198,7 @@ const PostPage: React.FC = () => {
                 className="inline-flex items-center px-2 sm:px-3 py-1 rounded-full text-xs font-medium bg-blue-500/20 text-blue-100 border border-blue-400/30"
                 role="button"
                 tabIndex={0}
+                aria-label={`標籤：${tag}`}
               >
                 <Tag className="w-2.5 h-2.5 sm:w-3 sm:h-3 mr-1" />
                 {tag}

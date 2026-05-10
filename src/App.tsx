@@ -9,6 +9,7 @@ import ScrollProgress from './components/ScrollProgress';
 import ScrollToTop from './components/ScrollToTop';
 import TagCloudPage from './components/TagCloudPage';
 import StaticPage from './components/StaticPage';
+import ErrorBoundary from './components/ErrorBoundary';
 import { setupGlobalErrorHandling } from './utils/errorReporting';
 import { withBase } from './utils/paths';
 import './styles.css';
@@ -30,8 +31,6 @@ const ScrollToTopOnRouteChange: React.FC = () => {
 };
 
 function App() {
-  const [scrollY, setScrollY] = useState(0);
-  
   // 應用網站優化
   useWebsiteOptimization({
     title: "HYJ's Blog",
@@ -40,67 +39,51 @@ function App() {
     type: 'website'
   });
 
-  useEffect(() => {
-    const handleScroll = () => setScrollY(window.scrollY);
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
   // 初始化全局錯誤處理
   useEffect(() => {
     setupGlobalErrorHandling();
   }, []);
 
   return (
-    <Router>
-      <ScrollToTopOnRouteChange />
-      <div className="min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900" id="main-content">
-        {/* 滾動進度條 */}
-        <ScrollProgress />
-        
-        {/* Background Image with Blur Effect - 改進版本 */}
-        <div 
-          className="background-image"
-          style={{
-            backgroundImage: `url('${withBase('images/background.jpg')}')`,
-            filter: `blur(${Math.min(scrollY / 10, 20)}px)`,
-            opacity: 0.3,
-            willChange: 'filter'
-          }}
-          aria-hidden="true"
-        />
-        
-        {/* Overlay */}
-        <div className="fixed inset-0 bg-black/20" aria-hidden="true" />
-        
-        {/* Content */}
-        <main className="relative z-10" role="main">
-          <Navbar />
+    <ErrorBoundary>
+      <Router>
+        <ScrollToTopOnRouteChange />
+        <div className="min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900" id="main-content">
+          {/* 滾動進度條 */}
+          <ScrollProgress />
           
-          <Suspense fallback={<LoadingSpinner />}>
-            <Routes>
-              <Route path="/" element={
-                <>
-                  <Hero />
-                  <HomePage />
-                </>
-              } />
-              <Route path="/post/:slug" element={<PostPage />} />
-              <Route path="/tags" element={<TagCloudPage />} />
-              <Route path="/about" element={<StaticPage pageKey="about" />} />
-              <Route path="/friends" element={<StaticPage pageKey="friends" />} />
-              <Route path="/category/:category" element={<HomePage />} />
-              <Route path="*" element={<NotFoundPage />} />
-            </Routes>
-          </Suspense>
+          {/* Overlay */}
+          <div className="fixed inset-0 bg-black/20" aria-hidden="true" />
           
-          <Footer />
-        </main>
-        
-        {/* 回到頂部按鈕 */}
-        <ScrollToTop />
-      </div>
-    </Router>
+          {/* Content */}
+          <main className="relative z-10" role="main">
+            <Navbar />
+            
+            <Suspense fallback={<LoadingSpinner />}>
+              <Routes>
+                <Route path="/" element={
+                  <>
+                    <Hero />
+                    <HomePage />
+                  </>
+                } />
+                <Route path="/post/:slug" element={<PostPage />} />
+                <Route path="/tags" element={<TagCloudPage />} />
+                <Route path="/about" element={<StaticPage pageKey="about" />} />
+                <Route path="/friends" element={<StaticPage pageKey="friends" />} />
+                <Route path="/category/:category" element={<HomePage />} />
+                <Route path="*" element={<NotFoundPage />} />
+              </Routes>
+            </Suspense>
+            
+            <Footer />
+          </main>
+          
+          {/* 回到頂部按鈕 */}
+          <ScrollToTop />
+        </div>
+      </Router>
+    </ErrorBoundary>
   );
 }
 

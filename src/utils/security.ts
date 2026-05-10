@@ -15,26 +15,34 @@ export class SecurityManager {
     this.preventClickjacking();
     this.sanitizeInputs();
     this.setupSecureHeaders();
+    this.setupPrivacyConsent();
   }
 
   // 設置內容安全政策 (CSP)
   private setupCSP(): void {
+    // 生成 nonce 用於內聯腳本
+    const nonce = this.generateSecureId();
+
     const cspMeta = document.createElement('meta');
     cspMeta.httpEquiv = 'Content-Security-Policy';
     cspMeta.content = [
       "default-src 'self'",
-      "script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://www.google-analytics.com",
-      "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
+      `script-src 'self' https://www.googletagmanager.com https://www.google-analytics.com 'nonce-${nonce}'`,
+      "style-src 'self' https://fonts.googleapis.com 'nonce-${nonce}'",
       "font-src 'self' https://fonts.gstatic.com",
       "img-src 'self' data: https: blob:",
       "connect-src 'self' https://www.google-analytics.com",
       "frame-src 'self' https://open.spotify.com",
       "object-src 'none'",
       "base-uri 'self'",
-      "form-action 'self'"
+      "form-action 'self'",
+      "upgrade-insecure-requests"
     ].join('; ');
-    
+
     document.head.appendChild(cspMeta);
+
+    // 將 nonce 存儲在全局變數中供其他腳本使用
+    (window as any).cspNonce = nonce;
   }
 
   // 防止點擊劫持
@@ -163,13 +171,73 @@ export class SecurityManager {
     }
   };
 
-  private generateChecksum(data: string): string {
-    let hash = 0;
-    for (let i = 0; i < data.length; i++) {
-      const char = data.charCodeAt(i);
-      hash = ((hash << 5) - hash) + char;
-      hash = hash & hash; // 轉換為 32 位整數
+  // 隱私同意管理
+  private setupPrivacyConsent(): void {
+    const consent = this.getPrivacyConsent();
+    if (!consent) {
+      this.showPrivacyBanner();
     }
-    return hash.toString();
   }
-}
+
+  // 顯示隱私同意橫幅
+  private showPrivacyBanner(): void {
+    const banner = document.createElement('div');
+    banner.id = 'privacy-banner';
+    banner.className = 'fixed bottom-0 left-0 right-0 bg-gray-900 text-white p-4 z-50';
+    banner.innerHTML = `
+      <div class="max-w-4xl mx-auto flex flex-col sm:flex-row items-center justify-between">
+        <div class="mb-4 sm:mb-0 sm:mr-4">
+          <p class="text-sm">
+            我們使用 cookies 和類似技術來改善您的瀏覽體驗並分析網站流量。
+            <a href="/privacy" class="underline hover:no-underline">了解更多</a>
+          </p>
+        </div>
+        <div class="flex space-x-2">
+          <button id="accept-all" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded text-sm">
+            接受全部
+          </button>
+          <button id="accept-essential" class="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded text-sm">
+            僅必要
+          </button>
+        </div>
+      </div>
+    `;
+
+    document.body.appendChild(banner);
+
+    // 添加事件監聽器
+    document.getElementById('accept-all')?.addEventListener('click', () => {
+      this.setPrivacyConsent({ analytics: true, marketing: true });
+      banner.remove();
+    });
+
+    document.getElementById('accept-essential')?.addEventListener('click', () => {
+      this.setPrivacyConsent({ analytics: false, marketing: false });
+      banner.remove();
+    });
+  }
+
+  // 獲取隱私同意
+  getPrivacyConsent(): { analytics: boolean; marketing: boolean } | null {
+    try {
+      const consent = localStorage.getItem('privacy-consent');
+      return consent ? JSON.parse(consent) : null;
+    } catch {
+      return null;
+    }
+  }
+
+  // 設置隱私同意
+  setPrivacyConsent(consent: { analytics: boolean; marketing: boolean }): void {
+    try {
+      localStorage.setItem('privacy-consent', JSON.stringify(consent));
+    } catch (error) {
+      console.error('無法儲存隱私同意:', error);
+    }
+  }
+
+  // 檢查是否可以載入分析腳本
+  canLoadAnalytics(): boolean {
+    const consent = this.getPrivacyConsent();
+    return consent ? consent.analytics : false;
+  }
