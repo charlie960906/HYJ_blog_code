@@ -5,7 +5,9 @@
     "moduleResolution": "node",
     "esModuleInterop": true,
     "skipLibCheck": true,
-    "strict": true
+    "strict": true,
+    "types": ["node"],
+    "ignoreDeprecations": "6.0"
   },
   "ts-node": {
     "esm": true

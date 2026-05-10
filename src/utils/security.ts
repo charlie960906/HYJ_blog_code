@@ -241,3 +241,4 @@ export class SecurityManager {
     const consent = this.getPrivacyConsent();
     return consent ? consent.analytics : false;
   }
+}

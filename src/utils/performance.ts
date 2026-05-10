@@ -490,7 +490,7 @@ export const PrefetchManager = {
   },
 
   // 根據當前路徑確定要預取的URL
-  private getPrefetchUrls(currentPath: string): string[] {
+  getPrefetchUrls(currentPath: string): string[] {
     const urls: string[] = [];
     
     if (currentPath === '/') {
@@ -544,6 +544,7 @@ export const PrefetchManager = {
   }
 };
 
+export const CacheManager = {
   // 清除過期快取
   clearExpiredCache(): void {
     const cacheKeys = ['posts-cache', 'images-cache', 'static-cache'];

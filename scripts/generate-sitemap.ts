@@ -14,8 +14,8 @@ const categoryRoutes = ['information', 'reviews', 'finance', 'travel', 'life'];
 
 const buildSitemap = () => {
   const posts = fs.readdirSync(publicPostPath)
-    .filter(name => name.endsWith('.md'))
-    .map(name => name.replace(/\.md$/, ''));
+    .filter((name: string) => name.endsWith('.md'))
+    .map((name: string) => name.replace(/\.md$/, ''));
 
   const urls = [
     ...staticRoutes.map(route => `
@@ -32,7 +32,7 @@ const buildSitemap = () => {
   <priority>0.7</priority>
 </url>`),
 
-    ...posts.map(slug => `
+    ...posts.map((slug: string) => `
 <url>
   <loc>${domain}/post/${slug}</loc>
   <changefreq>monthly</changefreq>
